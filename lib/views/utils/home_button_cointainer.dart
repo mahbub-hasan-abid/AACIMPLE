@@ -1,42 +1,49 @@
-import 'package:aacimple/constant.dart';
 import 'package:aacimple/models/home_screen_button_model.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class HomeButtonContainer extends StatelessWidget {
-  final HomeButtonModel homeButtonModel; // Receiving HomeButtonModel data
+  final HomeButtonModel homeButtonModel;
 
-  const HomeButtonContainer({super.key, required this.homeButtonModel});
+  HomeButtonContainer({
+    super.key,
+    required this.homeButtonModel,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
+      width: Get.width * .2,
+      height: Get.height * .2,
       padding: const EdgeInsets.all(8.0),
       child: Container(
-          // width: width.value * 0.1,
-          // height: width.value * 0.1,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: Colors.blue[900],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                homeButtonModel.icon.icon,
-                size: homeButtonModel.icon.size,
-                color: Colors.white54,
-              ),
-              const SizedBox(height: 8),
-              Text(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: Color(0xFF010080),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              homeButtonModel.icon.icon,
+              size: Get.width * 0.05,
+              color: Colors.white,
+            ),
+            const SizedBox(height: 5),
+            Center(
+              child: Text(
                 homeButtonModel.label,
-                style: const TextStyle(
-                  fontSize: 16,
+                style: TextStyle(
+                  fontSize: Get.width * 0.02,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-            ],
-          )),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

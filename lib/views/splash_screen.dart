@@ -10,14 +10,14 @@ class SplashScreen extends StatelessWidget {
     return Scaffold(
       body: Center(
           child: TweenAnimationBuilder(
-        tween: Tween<double>(begin: 0.5, end: 1.5),
+        tween: Tween<double>(begin: 0.2, end: 1.2),
         duration: Duration(seconds: 3),
         curve: Curves.easeInOutCirc,
         builder: (context, double scale, child) {
           return Transform.scale(
             scale: scale,
             child: const Text(
-              'Welcome to MyApp',
+              'Welcome to AACIMPLE',
               style: TextStyle(
                 fontSize: 30.0,
                 fontWeight: FontWeight.bold,
@@ -27,7 +27,7 @@ class SplashScreen extends StatelessWidget {
           );
         },
         onEnd: () {
-          Get.off(HomePage());
+          Get.off(() => HomePage());
         },
       )),
     );

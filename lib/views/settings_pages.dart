@@ -21,7 +21,7 @@ class GeneralSettingsPage extends StatelessWidget {
             fontSize: 22,
           ),
         ),
-        backgroundColor: mainBgColor.value,
+        backgroundColor: Color(0xFF010080),
         elevation: 4,
       ),
       body: Padding(
@@ -312,8 +312,8 @@ class GeneralSettingsPage extends StatelessWidget {
         ));
   }
 
-  Widget _buildFontFamilyPicker(String title, IconData icon,
-      RxString observable, ValueChanged<String> onChanged) {
+  _buildFontFamilyPicker(String title, IconData icon, RxString observable,
+      ValueChanged<String> onChanged) {
     List<String> fontFamilies = ['Tahoma', 'Calibri', 'Arial'];
     return Obx(() => Card(
           margin: EdgeInsets.symmetric(vertical: 8),

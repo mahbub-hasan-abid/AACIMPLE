@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
         appBarTheme: AppBarTheme(
-          backgroundColor: Color(0xFF434261),
+          backgroundColor: Color(0xFF010080),
           foregroundColor: Colors.white, // This sets the text color
         ),
       ),

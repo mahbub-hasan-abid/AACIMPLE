@@ -1,7 +1,10 @@
 import 'package:aacimple/constant.dart';
 import 'package:aacimple/models/home_screen_button_model.dart';
+import 'package:aacimple/views/registratation_page.dart';
+import 'package:aacimple/views/registration_page2.dart';
 import 'package:aacimple/views/settings_pages.dart';
 import 'package:aacimple/views/utils/home_button_cointainer.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -37,10 +40,15 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  HomeButtonContainer(
-                    homeButtonModel: HomeButtonModel(
-                      icon: const Icon(Icons.app_registration),
-                      label: "Registration and Licence",
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(() => RegistratationPage2());
+                    },
+                    child: HomeButtonContainer(
+                      homeButtonModel: HomeButtonModel(
+                        icon: const Icon(Icons.app_registration),
+                        label: "Registration and Licence",
+                      ),
                     ),
                   ),
                   HomeButtonContainer(

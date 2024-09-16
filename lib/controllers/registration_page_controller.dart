@@ -49,8 +49,8 @@ class RegistrationController extends GetxController {
     } else {
       Get.snackbar(
         'Error',
-        'Please correct the errors in the form.',
-        snackPosition: SnackPosition.BOTTOM,
+        'Please fill up the form correctly.',
+        snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.redAccent,
         colorText: Colors.white,
         duration: Duration(seconds: 3),

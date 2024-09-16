@@ -1,10 +1,11 @@
 import 'package:aacimple/controllers/registration_page_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
-class RegistratationPage2 extends StatelessWidget {
+class RegistratationPage extends StatelessWidget {
   final RegistrationController controller = Get.put(RegistrationController());
+
+  RegistratationPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +82,7 @@ class RegistratationPage2 extends StatelessWidget {
         SizedBox(
           width: Get.width * 0.4, // Set width to 60% of the screen width
           child: ElevatedButton(
-            onPressed: isFormValid ? () => controller.registerUser() : null,
+            onPressed: () => controller.registerUser(),
             style: ElevatedButton.styleFrom(
               backgroundColor:
                   isFormValid ? const Color(0xFF010080) : Colors.grey,
@@ -203,8 +204,22 @@ class RegistratationPage2 extends StatelessWidget {
         Divider(),
         Text(
           'Developers: SESAT Ltd, Cyprus',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
         ),
+        // Text(
+        //   'J',
+        //   style: TextStyle(fontFamily: 'ARIAL'),
+        // ),
+        // Text(
+        //   'J',
+        //   style: TextStyle(fontFamily: 'Tahoma'),
+        // ),
+        // Text(
+        //   'J',
+        //   style: TextStyle(fontFamily: 'calibri'),
+        // ),
         Text('Email: sesses@cytanet.com.cy'),
         Text('Version: 1.0, All rights reserved'),
         Text('Website: www.sesarab.com'),

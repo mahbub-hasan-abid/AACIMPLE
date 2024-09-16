@@ -1,4 +1,3 @@
-import 'package:aacimple/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
@@ -13,7 +12,7 @@ class GeneralSettingsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'General Settings',
           style: TextStyle(
             color: Colors.white,
@@ -83,6 +82,26 @@ class GeneralSettingsPage extends StatelessWidget {
                 controller.fontFamily,
                 controller.updateFontFamily,
               ),
+              // Obx(() {
+              //   return Text(
+              //     'J Q O T t a A ;',
+              //     style: TextStyle(fontSize: controller.fontSize.value),
+              //   );
+              // }),
+
+              // ),
+              // Text(
+              //   'J',
+              //   style: TextStyle(fontFamily: 'ARIAL', fontSize: 40),
+              // ),
+              // Text(
+              //   'J',
+              //   style: TextStyle(fontFamily: 'Tahoma', fontSize: 40),
+              // ),
+              // Text(
+              //   'J A',
+              //   style: TextStyle(fontFamily: 'calibri', fontSize: 40),
+              // ),
               _buildSlider(
                 'Size of Fonts',
                 Icons.text_fields,

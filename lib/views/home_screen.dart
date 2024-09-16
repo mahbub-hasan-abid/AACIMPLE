@@ -1,20 +1,23 @@
 import 'package:aacimple/constant.dart';
 import 'package:aacimple/models/home_screen_button_model.dart';
-import 'package:aacimple/views/registratation_page.dart';
-import 'package:aacimple/views/registration_page2.dart';
+import 'package:aacimple/views/database_page.dart';
+
+import 'package:aacimple/views/registration_page.dart';
 import 'package:aacimple/views/settings_pages.dart';
 import 'package:aacimple/views/utils/home_button_cointainer.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+
+import 'package:hive/hive.dart';
 
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: mainBgColor.value,
+      //backgroundColor: mainBgColor.value,
+
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -42,7 +45,7 @@ class HomePage extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Get.to(() => RegistratationPage2());
+                      Get.to(() => RegistratationPage());
                     },
                     child: HomeButtonContainer(
                       homeButtonModel: HomeButtonModel(
@@ -51,16 +54,27 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  HomeButtonContainer(
-                    homeButtonModel: HomeButtonModel(
-                      icon: const Icon(Icons.message_rounded),
-                      label: "Create New Message ",
+                  GestureDetector(
+                    onTap: () {
+                      print(Hive.isBoxOpen('mainDatabase'));
+                      print(Hive.isBoxOpen('oldMessagesDatabase'));
+                    },
+                    child: HomeButtonContainer(
+                      homeButtonModel: HomeButtonModel(
+                        icon: const Icon(Icons.message_rounded),
+                        label: "Create New Message ",
+                      ),
                     ),
                   ),
-                  HomeButtonContainer(
-                    homeButtonModel: HomeButtonModel(
-                      icon: const Icon(Icons.data_saver_off_outlined),
-                      label: "Database Management",
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(() => DatabaseManagementPage());
+                    },
+                    child: HomeButtonContainer(
+                      homeButtonModel: HomeButtonModel(
+                        icon: const Icon(Icons.data_saver_off_outlined),
+                        label: "Database Management",
+                      ),
                     ),
                   ),
                   HomeButtonContainer(

@@ -1,3 +1,4 @@
+import 'package:aacimple/views/database_page.dart';
 import 'package:aacimple/views/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -62,7 +63,7 @@ class MyApp extends StatelessWidget {
             bodyLarge: TextStyle(fontSize: settingsController.fontSize.value),
           ),
         ),
-        home: HomePage(),
+        home: DatabaseManagementPage(),
       );
     });
   }

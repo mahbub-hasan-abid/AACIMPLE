@@ -1,5 +1,6 @@
 import 'package:aacimple/constant.dart';
 import 'package:aacimple/models/home_screen_button_model.dart';
+import 'package:aacimple/views/create_new_message_page.dart';
 import 'package:aacimple/views/database_page.dart';
 
 import 'package:aacimple/views/registration_page.dart';
@@ -56,8 +57,7 @@ class HomePage extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      print(Hive.isBoxOpen('mainDatabase'));
-                      print(Hive.isBoxOpen('oldMessagesDatabase'));
+                      Get.to(() => MessageInputPage());
                     },
                     child: HomeButtonContainer(
                       homeButtonModel: HomeButtonModel(

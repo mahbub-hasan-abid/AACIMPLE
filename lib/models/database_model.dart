@@ -1,10 +1,20 @@
 import 'package:hive/hive.dart';
+part 'database_model.g.dart';
 
-// Register the adapter for MessageModel
-// Make sure to add this line
 
+
+// Enum for determining the source of image/sound
+@HiveType(typeId: 2) // Assign a new typeId for this enum
+enum FromWhere {
+  @HiveField(0)
+  assets,
+  @HiveField(1)
+  user,
+}
+
+// Register the adapter for DatabaseModel
 @HiveType(typeId: 0)
-class MessageModel {
+class DatabaseModel {
   @HiveField(0)
   final String keyfieldCode;
 
@@ -38,22 +48,28 @@ class MessageModel {
   @HiveField(10)
   final String backgroundColor;
 
-  MessageModel({
-    required this.keyfieldCode,
-    required this.messageText,
-    required this.messageImage,
-    required this.messageSound,
-    required this.language,
-    this.isPictureVisible = true, // Default ON
-    this.isTextVisible = true, // Default ON
-    this.isSoundEnabled = true, // Default ON
-    this.fontSize = 12, // Default font size
-    this.fontColor = 'White', // Default font color
-    this.backgroundColor = 'Dark Blue', // Default background color
-  });
+  @HiveField(11)
+  final FromWhere fromWhere; // New field for image source
+
+  // New field for sound source
+
+  DatabaseModel(
+      {required this.keyfieldCode,
+      required this.messageText,
+      required this.messageImage,
+      this.messageSound = '',
+      required this.language,
+      this.isPictureVisible = true, // Default ON
+      this.isTextVisible = true, // Default ON
+      this.isSoundEnabled = true, // Default ON
+      this.fontSize = 12, // Default font size
+      this.fontColor = 'White', // Default font color
+      this.backgroundColor = 'Dark Blue', // Default background color
+      required this.fromWhere // Default source is user
+      });
 
   // Implement the copyWith method
-  MessageModel copyWith({
+  DatabaseModel copyWith({
     String? keyfieldCode,
     String? messageText,
     String? messageImage,
@@ -65,8 +81,9 @@ class MessageModel {
     int? fontSize,
     String? fontColor,
     String? backgroundColor,
+    FromWhere? fromWhere, // Include the new field in copyWith
   }) {
-    return MessageModel(
+    return DatabaseModel(
       keyfieldCode: keyfieldCode ?? this.keyfieldCode,
       messageText: messageText ?? this.messageText,
       messageImage: messageImage ?? this.messageImage,
@@ -78,6 +95,7 @@ class MessageModel {
       fontSize: fontSize ?? this.fontSize,
       fontColor: fontColor ?? this.fontColor,
       backgroundColor: backgroundColor ?? this.backgroundColor,
+      fromWhere: fromWhere ?? this.fromWhere, // Default to existing source
     );
   }
 

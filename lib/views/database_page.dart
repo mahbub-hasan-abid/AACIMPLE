@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:aacimple/controllers/databasea_controller.dart';
 import 'package:aacimple/controllers/settings_controller.dart';
+import 'package:aacimple/models/database_model.dart';
 import 'package:aacimple/views/message%20_details_page.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// Import your details page
 
 class DatabaseManagementPage extends StatelessWidget {
   final DatabaseController controller = Get.put(DatabaseController());
@@ -17,8 +20,7 @@ class DatabaseManagementPage extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
 
     // Adjust crossAxisCount based on screen width
-    int crossAxisCount =
-        screenWidth < 600 ? 2 : 4; // 2 items on small screens, 4 on larger
+    int crossAxisCount = screenWidth < 600 ? 2 : 4;
 
     return DefaultTabController(
       length: 2, // Number of tabs
@@ -26,21 +28,18 @@ class DatabaseManagementPage extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Database Management'),
           bottom: const TabBar(
-            labelColor: Colors.white, // Color for selected tab
-            unselectedLabelColor: Colors.white, // Color for unselected tabs
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.white,
             labelStyle: TextStyle(
-              fontSize: 16.0, // Custom font size for selected tab
-              fontWeight:
-                  FontWeight.bold, // Custom font weight for selected tab
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
             ),
             unselectedLabelStyle: TextStyle(
-              fontSize: 14.0, // Custom font size for unselected tabs
+              fontSize: 14.0,
             ),
             tabs: [
               Tab(text: 'Main Database'),
-              Tab(
-                text: 'Old Messages Database',
-              ),
+              Tab(text: 'Old Messages Database'),
             ],
           ),
         ),
@@ -50,7 +49,7 @@ class DatabaseManagementPage extends StatelessWidget {
             Obx(
               () => Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: controller.mainDatabaseMessages.isEmpty
+                child: controller.mainHiveDatabaseMessages.isEmpty
                     ? const Center(
                         child: Text(
                           'No records available',
@@ -59,40 +58,38 @@ class DatabaseManagementPage extends StatelessWidget {
                       )
                     : GridView.builder(
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount:
-                              crossAxisCount, // Responsive cross-axis count
-                          mainAxisSpacing: 16.0, // Spacing between rows
-                          crossAxisSpacing: 16.0, // Spacing between columns
-                          childAspectRatio:
-                              1.5, // Adjust the aspect ratio for container size
+                          crossAxisCount: crossAxisCount,
+                          mainAxisSpacing: 16.0,
+                          crossAxisSpacing: 16.0,
+                          childAspectRatio: 1.5,
                         ),
-                        itemCount: controller.mainDatabaseMessages.length,
+                        itemCount: controller.mainHiveDatabaseMessages.length,
                         itemBuilder: (context, index) {
                           final message =
-                              controller.mainDatabaseMessages[index];
+                              controller.mainHiveDatabaseMessages[index];
                           return GestureDetector(
                             onTap: () {
                               // Navigate to Details Page when clicked
-                              // Get.to(
-                              //     () => MessageDetailsPage(message: message));
+                              Get.to(
+                                  () => MessageDetailsPage(message: message));
                             },
                             child: Container(
-                              decoration: BoxDecoration(
-                                color: settingController.backgroundColor.value,
-                                borderRadius: BorderRadius.circular(16.0),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 8,
-                                    spreadRadius: 2,
-                                  ),
-                                ],
-                              ),
-                              child: Image.asset(
-                                message.messageImage,
-                                fit: BoxFit.scaleDown,
-                              ),
-                            ),
+                                decoration: BoxDecoration(
+                                  color:
+                                      settingController.backgroundColor.value,
+                                  borderRadius: BorderRadius.circular(16.0),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 8,
+                                      spreadRadius: 2,
+                                    ),
+                                  ],
+                                ),
+                                child: Image.file(
+                                  File(message.messageImage),
+                                  fit: BoxFit.scaleDown,
+                                )),
                           );
                         },
                       ),
@@ -102,7 +99,7 @@ class DatabaseManagementPage extends StatelessWidget {
             Obx(
               () => Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: controller.oldDatabaseMessages.isEmpty
+                child: controller.oldHiveDatabaseMessages.isEmpty
                     ? const Center(
                         child: Text(
                           'No records available',
@@ -111,16 +108,15 @@ class DatabaseManagementPage extends StatelessWidget {
                       )
                     : GridView.builder(
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount:
-                              crossAxisCount, // Responsive cross-axis count
-                          mainAxisSpacing: 16.0, // Spacing between rows
-                          crossAxisSpacing: 16.0, // Spacing between columns
-                          childAspectRatio:
-                              1.5, // Adjust the aspect ratio for container size
+                          crossAxisCount: crossAxisCount,
+                          mainAxisSpacing: 16.0,
+                          crossAxisSpacing: 16.0,
+                          childAspectRatio: 1.5,
                         ),
-                        itemCount: controller.oldDatabaseMessages.length,
+                        itemCount: controller.oldHiveDatabaseMessages.length,
                         itemBuilder: (context, index) {
-                          final message = controller.oldDatabaseMessages[index];
+                          final message =
+                              controller.oldHiveDatabaseMessages[index];
                           return GestureDetector(
                             onTap: () {
                               // Navigate to Details Page when clicked
@@ -128,22 +124,21 @@ class DatabaseManagementPage extends StatelessWidget {
                                   () => MessageDetailsPage(message: message));
                             },
                             child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16.0),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 8,
-                                    spreadRadius: 2,
-                                  ),
-                                ],
-                              ),
-                              child: Image.asset(
-                                message.messageImage,
-                                fit: BoxFit.scaleDown,
-                              ),
-                            ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16.0),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 8,
+                                      spreadRadius: 2,
+                                    ),
+                                  ],
+                                ),
+                                child: Image.file(
+                                  File(message.messageImage),
+                                  fit: BoxFit.scaleDown,
+                                )),
                           );
                         },
                       ),

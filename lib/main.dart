@@ -1,3 +1,4 @@
+import 'package:aacimple/models/database_model.dart';
 import 'package:aacimple/views/database_page.dart';
 import 'package:aacimple/views/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -10,34 +11,22 @@ import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-// var aaa= getApplicationDocumentsDirectory();
 
-  // Initialize Hive and open boxes
-  // final appDocumentDirectory = await getApplicationDocumentsDirectory();
-  // Hive.init(appDocumentDirectory.path);
-  await initHive();
+  final appDocumentDirectory = await getApplicationDocumentsDirectory();
+  await Hive.initFlutter(appDocumentDirectory.path);
+  // Register the adapters
+  Hive.registerAdapter(DatabaseModelAdapter());
+  Hive.registerAdapter(LanguageAdapter());
+  Hive.registerAdapter(FromWhereAdapter());
+  // await Hive.openBox('mainhivedatabase');
+  // await Hive.openBox('oldhivedatabase');
 
-  // Lock device orientation to landscape
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.landscapeRight,
     DeviceOrientation.landscapeLeft,
   ]);
 
-  // Run the app
   runApp(const MyApp());
-}
-
-Future<void> initHive() async {
-  await Hive.initFlutter();
-
-  // Ensure that the box is opened only once
-  // if (!Hive.isBoxOpen('mainDatabase')) {
-  //   await Hive.openBox('mainDatabase');
-  // }
-
-  // if (!Hive.isBoxOpen('oldMessagesDatabase')) {
-  //   await Hive.openBox('oldMessagesDatabase');
-  // }
 }
 
 class MyApp extends StatelessWidget {
@@ -63,7 +52,7 @@ class MyApp extends StatelessWidget {
             bodyLarge: TextStyle(fontSize: settingsController.fontSize.value),
           ),
         ),
-        home: DatabaseManagementPage(),
+        home: HomePage(),
       );
     });
   }

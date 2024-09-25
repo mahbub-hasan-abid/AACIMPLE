@@ -53,8 +53,8 @@ class DatabaseController extends GetxController {
         keyfieldCode:
             DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
         messageText: 'Adelfi', fromWhere: FromWhere.assets,
-        messageImage: await storeAssetImageToHive('assets/images/αγαπώ.png'),
-        messageSound: 'assets/audios/adelfi.mp3',
+        messageImage: await storeAssetFileToHive('assets/images/αγαπώ.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfi.mp3'),
         language: Language.English, // Using the Language enum
       ),
       DatabaseModel(
@@ -62,8 +62,8 @@ class DatabaseController extends GetxController {
             DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
         messageText: 'adelfos',
         fromWhere: FromWhere.assets,
-        messageImage: await storeAssetImageToHive('assets/images/αγκαλιά.png'),
-        messageSound: 'assets/audios/adelfos.mp3',
+        messageImage: await storeAssetFileToHive('assets/images/αγκαλιά.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfos.mp3'),
         language: Language.English,
       ),
       DatabaseModel(
@@ -71,8 +71,8 @@ class DatabaseController extends GetxController {
             DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
         messageText: 'agapo',
         fromWhere: FromWhere.assets,
-        messageImage: await storeAssetImageToHive('assets/images/αδeρφή.png'),
-        messageSound: 'assets/audios/agapo.mp3',
+        messageImage: await storeAssetFileToHive('assets/images/αδeρφή.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/agapo.mp3'),
         language: Language.English,
       ),
     ];
@@ -93,12 +93,6 @@ class DatabaseController extends GetxController {
     File(filePath).writeAsBytesSync(
         buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
     return filePath;
-    // saveMedia(filePath, 'image');
-    // mediaFiles.add({'path': filePath, 'type': 'image'});
-    // mediaBox.put('mediaFiles', mediaFiles.toList());
-
-    // mediaBox.put('mediaFiles', filePath);
-    // imageFilePath.value = filePath;
   }
 
   // Load messages from the main database
@@ -118,7 +112,7 @@ class DatabaseController extends GetxController {
     // mediaBox.put('mediaFiles', mediaFiles.toList());
   }
 
-  Future<String> storeAssetImageToHive(String assetImagePath) async {
+  Future<String> storeAssetFileToHive(String assetImagePath) async {
     try {
       // Get the application's documents directory to store the image
       final directory = await getApplicationDocumentsDirectory();

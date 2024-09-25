@@ -1,25 +1,39 @@
 import 'dart:io';
 
 import 'package:aacimple/models/database_model.dart';
-import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
-class MessageDetailsPage extends StatelessWidget {
+class MessageDetailsPage extends StatefulWidget {
   final DatabaseModel message;
 
-  MessageDetailsPage({required this.message});
+  const MessageDetailsPage({required this.message});
+
+  @override
+  _MessageDetailsPageState createState() => _MessageDetailsPageState();
+}
+
+class _MessageDetailsPageState extends State<MessageDetailsPage> {
+  late AudioPlayer audioPlayer;
+  bool isPlaying = false;
+
+  @override
+  void initState() {
+    super.initState();
+    audioPlayer = AudioPlayer();
+  }
+
+  @override
+  void dispose() {
+    audioPlayer.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Initialize audio player
-    final AudioPlayer audioPlayer = AudioPlayer();
-    final assetsAudioPlayer = AssetsAudioPlayer();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Message Details'),
+        title: const Text('Message Details'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -27,15 +41,12 @@ class MessageDetailsPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Display the image
-
               const SizedBox(height: 16.0),
-
               SizedBox(
                 height: 100,
                 width: 100,
                 child: Image.file(
-                  File(message.messageImage),
+                  File(widget.message.messageImage),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -51,63 +62,32 @@ class MessageDetailsPage extends StatelessWidget {
               ),
               const SizedBox(height: 8.0),
               Text(
-                message.messageText, // Display the message text
-                style: TextStyle(fontSize: 16.0),
+                widget.message.messageText,
+                style: const TextStyle(fontSize: 16.0),
               ),
               const SizedBox(height: 16.0),
 
-              // Audio play button
-              // Center(
-              //   child: ElevatedButton.icon(
-              //     onPressed: () {
-              //       // Play the audio when the button is clicked
-              //       audioPlayer.play(AssetSource(
-              //           'assets/audios/adelfi.mp3')); // Use audioPlayer
-              //     },
-              //     icon: Icon(Icons.play_arrow),
-              //     label: Text('Play Audio'),
-              //   ),
-              // ),
-              Center(
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    // Play the audio when the button is clicked
-                    audioPlayer.setSource(AssetSource(
-                        'assets/audios/adelfi.mp3')); // Use audioPlayer
-                  },
-                  icon: Icon(Icons.play_arrow),
-                  label: Text('Play Audio'),
-                ),
-              ),
-              Center(
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    // Play the audio when the button is clicked
-                    // audioPlayer.play(AssetSource(
-                    //     'assets/sounds/adelfi.mp3')); // Use audioPlayer
+              const Text('---'),
+              Text(widget.message.messageSound),
 
-                    assetsAudioPlayer.open(
-                      Audio(message.messageSound),
-                    );
-                  },
-                  icon: Icon(Icons.play_arrow),
-                  label: Text('Play Audio'),
-                ),
-              ),
-              Text(message.messageSound),
               Center(
                 child: ElevatedButton.icon(
-                  onPressed: () {
-                    // Play the audio when the button is clicked
-                    // audioPlayer.play(AssetSource(
-                    //     'assets/sounds/adelfi.mp3')); // Use audioPlayer
-
-                    assetsAudioPlayer.open(
-                      Audio('assets/audios/adelfi.mp3'),
-                    );
+                  onPressed: () async {
+                    if (isPlaying) {
+                      await audioPlayer.stop();
+                      setState(() {
+                        isPlaying = false;
+                      });
+                    } else {
+                      await audioPlayer
+                          .play(DeviceFileSource(widget.message.messageSound));
+                      setState(() {
+                        isPlaying = true;
+                      });
+                    }
                   },
-                  icon: Icon(Icons.play_arrow),
-                  label: Text('Play Audio'),
+                  icon: Icon(isPlaying ? Icons.stop : Icons.play_arrow),
+                  label: Text(isPlaying ? 'Stop Audio' : 'Play Audio'),
                 ),
               ),
             ],

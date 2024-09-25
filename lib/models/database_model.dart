@@ -1,8 +1,6 @@
 import 'package:hive/hive.dart';
 part 'database_model.g.dart';
 
-
-
 // Enum for determining the source of image/sound
 @HiveType(typeId: 2) // Assign a new typeId for this enum
 enum FromWhere {
@@ -57,7 +55,7 @@ class DatabaseModel {
       {required this.keyfieldCode,
       required this.messageText,
       required this.messageImage,
-      this.messageSound = '',
+      required this.messageSound,
       required this.language,
       this.isPictureVisible = true, // Default ON
       this.isTextVisible = true, // Default ON

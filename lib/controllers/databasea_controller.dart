@@ -78,6 +78,396 @@ class DatabaseController extends GetxController {
         messageSound: await storeAssetFileToHive('assets/audios/agapo.mp3'),
         language: Language.English,
       ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'Adelfi 4', fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγαπώ.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfi.mp3'),
+        language: Language.English, // Using the Language enum
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'adelfos 5',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγκαλιά.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfos.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'agapo 6',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αδeρφή.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/agapo.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'Adelfi 7', fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγαπώ.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfi.mp3'),
+        language: Language.English, // Using the Language enum
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'adelfos 8',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγκαλιά.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfos.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'agapo 9',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αδeρφή.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/agapo.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'Adelfi 10', fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγαπώ.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfi.mp3'),
+        language: Language.English, // Using the Language enum
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'adelfos 11',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγκαλιά.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfos.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'agapo 12',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αδeρφή.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/agapo.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'Adelfi', fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγαπώ.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfi.mp3'),
+        language: Language.English, // Using the Language enum
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'adelfos',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγκαλιά.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfos.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'agapo',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αδeρφή.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/agapo.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'Adelfi 4', fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγαπώ.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfi.mp3'),
+        language: Language.English, // Using the Language enum
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'adelfos 5',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγκαλιά.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfos.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'agapo 6',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αδeρφή.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/agapo.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'Adelfi 7', fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγαπώ.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfi.mp3'),
+        language: Language.English, // Using the Language enum
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'adelfos 8',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγκαλιά.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfos.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'agapo 9',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αδeρφή.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/agapo.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'Adelfi 10', fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγαπώ.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfi.mp3'),
+        language: Language.English, // Using the Language enum
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'adelfos 11',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγκαλιά.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfos.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'agapo 12',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αδeρφή.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/agapo.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'Adelfi', fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγαπώ.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfi.mp3'),
+        language: Language.English, // Using the Language enum
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'adelfos',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγκαλιά.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfos.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'agapo',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αδeρφή.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/agapo.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'Adelfi 4', fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγαπώ.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfi.mp3'),
+        language: Language.English, // Using the Language enum
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'adelfos 5',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγκαλιά.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfos.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'agapo 6',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αδeρφή.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/agapo.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'Adelfi 7', fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγαπώ.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfi.mp3'),
+        language: Language.English, // Using the Language enum
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'adelfos 8',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγκαλιά.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfos.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'agapo 9',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αδeρφή.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/agapo.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'Adelfi 10', fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγαπώ.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfi.mp3'),
+        language: Language.English, // Using the Language enum
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'adelfos 11',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγκαλιά.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfos.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'agapo 12',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αδeρφή.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/agapo.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'Adelfi', fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγαπώ.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfi.mp3'),
+        language: Language.English, // Using the Language enum
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'adelfos',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγκαλιά.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfos.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'agapo',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αδeρφή.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/agapo.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'Adelfi 4', fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγαπώ.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfi.mp3'),
+        language: Language.English, // Using the Language enum
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'adelfos 5',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγκαλιά.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfos.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'agapo 6',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αδeρφή.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/agapo.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'Adelfi 7', fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγαπώ.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfi.mp3'),
+        language: Language.English, // Using the Language enum
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'adelfos 8',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγκαλιά.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfos.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'agapo 9',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αδeρφή.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/agapo.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'Adelfi 10', fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγαπώ.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfi.mp3'),
+        language: Language.English, // Using the Language enum
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'adelfos 11',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αγκαλιά.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/adelfos.mp3'),
+        language: Language.English,
+      ),
+      DatabaseModel(
+        keyfieldCode:
+            DatabaseModel.generateKeyfieldCode(mainHiveDatabase.value.length),
+        messageText: 'agapo 12',
+        fromWhere: FromWhere.assets,
+        messageImage: await storeAssetFileToHive('assets/images/αδeρφή.png'),
+        messageSound: await storeAssetFileToHive('assets/audios/agapo.mp3'),
+        language: Language.English,
+      ),
     ];
 
     for (var message in defaultMessages) {

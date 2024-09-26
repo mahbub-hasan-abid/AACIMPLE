@@ -1,5 +1,6 @@
 import 'package:aacimple/constant.dart';
 import 'package:aacimple/models/home_screen_button_model.dart';
+import 'package:aacimple/views/acrivity_page.dart';
 import 'package:aacimple/views/create_new_message_page.dart';
 import 'package:aacimple/views/database_page.dart';
 
@@ -8,6 +9,7 @@ import 'package:aacimple/views/settings_pages.dart';
 import 'package:aacimple/views/utils/home_button_cointainer.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:get/get.dart';
 
@@ -77,10 +79,15 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  HomeButtonContainer(
-                    homeButtonModel: HomeButtonModel(
-                      icon: const Icon(Icons.attractions_rounded),
-                      label: " Activity",
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(() => ActivityPage());
+                    },
+                    child: HomeButtonContainer(
+                      homeButtonModel: HomeButtonModel(
+                        icon: const Icon(Icons.attractions_rounded),
+                        label: " Activity",
+                      ),
                     ),
                   ),
                 ],

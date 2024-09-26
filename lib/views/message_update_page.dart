@@ -1,6 +1,6 @@
 import 'package:aacimple/controllers/databasea_controller.dart';
 import 'package:aacimple/models/database_model.dart';
-import 'package:aacimple/views/utils/experiment.dart';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';

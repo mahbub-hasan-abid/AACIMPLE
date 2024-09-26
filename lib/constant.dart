@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+Rx keyFielNo = 0.obs;
 Rx width = Get.width.obs;
 Rx height = Get.height.obs;
 // Rx measure = width.value > height.value ? width : height;

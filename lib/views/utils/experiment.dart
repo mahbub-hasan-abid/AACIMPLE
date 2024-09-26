@@ -15,7 +15,7 @@ class SoundSelector extends StatefulWidget {
 
 class _SoundSelectorState extends State<SoundSelector> {
   FlutterSoundRecorder? _recorder;
-  AudioPlayer _audioPlayer = AudioPlayer();
+  final AudioPlayer _audioPlayer = AudioPlayer();
   String? _filePath;
   bool _isRecording = false;
 

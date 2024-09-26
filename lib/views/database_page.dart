@@ -16,12 +16,12 @@ class DatabaseManagementPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get the screen size for responsive design
     final screenWidth = MediaQuery.of(context).size.width;
 
-    // Adjust crossAxisCount based on screen width
     int crossAxisCount = screenWidth < 600 ? 2 : 4;
 
+    print('-database---------------------------------');
+    print(controller.mainHiveDatabaseMessages.length);
     return DefaultTabController(
       length: 2, // Number of tabs
       child: Scaffold(
@@ -70,8 +70,11 @@ class DatabaseManagementPage extends StatelessWidget {
                           return GestureDetector(
                             onTap: () {
                               // Navigate to Details Page when clicked
-                              Get.to(
-                                  () => MessageDetailsPage(message: message));
+                              Get.to(() => MessageDetailsPage(
+                                    message: message,
+                                    index: index,
+                                    fromMainOrOld: 'main',
+                                  ));
                             },
                             child: Container(
                                 decoration: BoxDecoration(
@@ -120,8 +123,11 @@ class DatabaseManagementPage extends StatelessWidget {
                           return GestureDetector(
                             onTap: () {
                               // Navigate to Details Page when clicked
-                              Get.to(
-                                  () => MessageDetailsPage(message: message));
+                              Get.to(() => MessageDetailsPage(
+                                    message: message,
+                                    index: index,
+                                    fromMainOrOld: 'old',
+                                  ));
                             },
                             child: Container(
                                 decoration: BoxDecoration(

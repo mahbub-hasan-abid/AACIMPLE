@@ -20,9 +20,12 @@ class DatabaseController extends GetxController {
   RxList<DatabaseModel> oldHiveDatabaseMessages = <DatabaseModel>[].obs;
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
-    _initializeDatabase(); // Call async method without await in onInit
+    await _initializeDatabase();
+    print('controller----------------------------------');
+    print(mainHiveDatabaseMessages
+        .value.length); // Call async method without await in onInit
   }
 
   // Initialize the database asynchronously
@@ -35,7 +38,7 @@ class DatabaseController extends GetxController {
 
       // Add default messages if mainHiveDatabase is empty
       if (mainHiveDatabase.value.isEmpty) {
-        _addDefaultMessages();
+        await _addDefaultMessages();
       }
 
       // Load messages into the observable lists
@@ -80,6 +83,7 @@ class DatabaseController extends GetxController {
     for (var message in defaultMessages) {
       addMessageToMain(message);
     }
+    update();
   }
 
   Future<String> saveImageFromAssets(String assetPath) async {
@@ -89,7 +93,7 @@ class DatabaseController extends GetxController {
 
     final appDocDir = await getApplicationDocumentsDirectory();
     final filePath = join(appDocDir.path, 'image.jpg');
-    //saveMedia(filePath, 'image');
+
     File(filePath).writeAsBytesSync(
         buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
     return filePath;
@@ -213,8 +217,8 @@ class DatabaseController extends GetxController {
   }
 
   // Update a message in the main database
-  void updateMessageInMain(int index, DatabaseModel message) {
-    mainHiveDatabase.value.putAt(index, message);
+  Future<void> updateMessageInMain(int index, DatabaseModel message) async {
+    await mainHiveDatabase.value.putAt(index, message);
     loadmainHiveDatabaseMessages();
   }
 }

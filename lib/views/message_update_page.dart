@@ -16,15 +16,22 @@ import 'dart:io';
 
 import 'package:permission_handler/permission_handler.dart'; // For working with files
 
-class MessageInputPage extends StatefulWidget {
+class UpdateMessage extends StatefulWidget {
+  final DatabaseModel message;
+  final int index;
+
+  UpdateMessage({
+    super.key,
+    required this.message,
+    required this.index,
+  });
   @override
-  _MessageInputPageState createState() => _MessageInputPageState();
+  _UpdateMessageState createState() => _UpdateMessageState();
 }
 
-class _MessageInputPageState extends State<MessageInputPage> {
+class _UpdateMessageState extends State<UpdateMessage> {
   final DatabaseController _databaseController = Get.put(DatabaseController());
 
-  // Controllers for text fields
   final TextEditingController _messageTextController = TextEditingController();
   final TextEditingController _fontSizeController = TextEditingController();
   final TextEditingController _fontColorController = TextEditingController();
@@ -44,12 +51,26 @@ class _MessageInputPageState extends State<MessageInputPage> {
   bool isAudioFromInternet = false;
   FlutterSoundRecorder? _recorder;
   AudioPlayer _audioPlayer = AudioPlayer();
+  bool isImageUpdated = false;
+  bool isSoundUpdated = false;
 
   bool _isRecording = false;
   @override
   void initState() {
     super.initState();
     _recorder = FlutterSoundRecorder();
+    _messageTextController.text = widget.message.messageText;
+    _fontSizeController.text = widget.message.fontSize.toString();
+    _fontColorController.text = widget.message.fontColor;
+    _backgroundColorController.text = widget.message.backgroundColor;
+    _selectedLanguage = widget.message.language;
+    _selectedImage = widget.message.messageImage;
+    _selectedSound = widget.message.messageSound;
+    _isPictureVisible = widget.message.isPictureVisible;
+    _isTextVisible = widget.message.isTextVisible;
+    _isSoundEnabled = widget.message.isSoundEnabled;
+    _fromWhere = widget.message.fromWhere;
+
     _openRecorder();
   }
 
@@ -67,7 +88,7 @@ class _MessageInputPageState extends State<MessageInputPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add New Message'),
+        title: const Text('Update the Message'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -160,6 +181,7 @@ class _MessageInputPageState extends State<MessageInputPage> {
                 );
                 if (pickedImage != null) {
                   setState(() {
+                    isImageUpdated = true;
                     isImageFromInternet = false;
                     urlControllerImage.clear();
                     _selectedImage = pickedImage.path;
@@ -175,6 +197,7 @@ class _MessageInputPageState extends State<MessageInputPage> {
                 );
                 if (pickedImage != null) {
                   setState(() {
+                    isImageUpdated = true;
                     isImageFromInternet = false;
                     urlControllerImage.clear();
                     _selectedImage = pickedImage.path;
@@ -238,6 +261,10 @@ class _MessageInputPageState extends State<MessageInputPage> {
               ),
               ElevatedButton(
                 onPressed: () {
+                  audioORimage == 'audio'
+                      ? isSoundUpdated = true
+                      : isImageUpdated = true;
+
                   setState(() {});
                   audioORimage == 'audio'
                       ? {
@@ -298,6 +325,7 @@ class _MessageInputPageState extends State<MessageInputPage> {
           );
 
           setState(() {
+            isSoundUpdated = true;
             isAudioFromInternet = false;
             urlControllerAudio.clear();
             _isRecording = true;
@@ -328,6 +356,7 @@ class _MessageInputPageState extends State<MessageInputPage> {
         await FilePicker.platform.pickFiles(type: FileType.audio);
     if (result != null) {
       setState(() {
+        isSoundUpdated = true;
         urlControllerAudio.clear();
         isAudioFromInternet = false;
         _selectedSound = result.files.single.path;
@@ -425,23 +454,25 @@ class _MessageInputPageState extends State<MessageInputPage> {
         return;
       }
 
-      // Show loading indicator
       _showLoadingDialog(context);
 
       try {
         // Create the message
         DatabaseModel newMessage = DatabaseModel(
-          keyfieldCode: DatabaseModel.generateKeyfieldCode(
-              _databaseController.mainHiveDatabase.value.length),
+          keyfieldCode: widget.message.keyfieldCode,
           messageText: _messageTextController.text,
-          messageImage: isImageFromInternet
-              ? await _databaseController
-                  .downloadAndStoreImageInHive(urlControllerImage.text)
-              : await _databaseController.saveImageToHive(_selectedImage!),
-          messageSound: isAudioFromInternet
-              ? await _databaseController
-                  .downloadAndStoreImageInHive(urlControllerAudio.text)
-              : await _databaseController.saveImageToHive(_selectedSound!),
+          messageImage: isImageUpdated
+              ? isImageFromInternet
+                  ? await _databaseController
+                      .downloadAndStoreImageInHive(urlControllerImage.text)
+                  : await _databaseController.saveImageToHive(_selectedImage!)
+              : widget.message.messageImage,
+          messageSound: isImageUpdated
+              ? isAudioFromInternet
+                  ? await _databaseController
+                      .downloadAndStoreImageInHive(urlControllerAudio.text)
+                  : await _databaseController.saveImageToHive(_selectedSound!)
+              : widget.message.messageSound,
           language: _selectedLanguage!,
           isPictureVisible: _isPictureVisible,
           isTextVisible: _isTextVisible,
@@ -452,11 +483,9 @@ class _MessageInputPageState extends State<MessageInputPage> {
           fromWhere: _fromWhere!,
         );
 
-        Get.snackbar('if', 'if', snackPosition: SnackPosition.BOTTOM);
-
         // Add message to database
-        _databaseController.addMessageToMain(newMessage);
-
+        _databaseController.updateMessageInMain(widget.index, newMessage);
+        // widget.updateDatabasePage;
         // Clear form fields
         _messageTextController.clear();
         _fontSizeController.clear();
@@ -469,7 +498,9 @@ class _MessageInputPageState extends State<MessageInputPage> {
 
         setState(() {});
 
-        Get.snackbar('Success', 'Message added successfully',
+        Get.back();
+        Get.back();
+        Get.snackbar('Success', 'Message Updated successfully',
             snackPosition: SnackPosition.BOTTOM);
       } catch (e) {
         // Handle any error during the process

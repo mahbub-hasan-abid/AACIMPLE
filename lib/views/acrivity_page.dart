@@ -13,7 +13,7 @@ class ActivityPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Responsive Grid UI"),
+        title: const Text("Activities"),
       ),
       body: Center(
         child: Padding(
@@ -65,6 +65,9 @@ class ActivityPage extends StatelessWidget {
                           case 6:
                             Get.to(() =>
                                 TwelveMessagePage()); // Handle other cases
+                            break;
+                          case 7:
+                            Get.back(); // Handle other cases
                             break;
 
                           default:

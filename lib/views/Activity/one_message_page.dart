@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:aacimple/controllers/databasea_controller.dart';
 import 'package:aacimple/controllers/settings_controller.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,6 +19,22 @@ class _OneMessagePageState extends State<OneMessagePage> {
   int currentIndex = 0;
   Timer? _timer;
   bool isPresentationRunning = false;
+  late AudioPlayer audioPlayer;
+  bool isPlaying = false;
+
+  @override
+  void initState() {
+    super.initState();
+    audioPlayer = AudioPlayer();
+  }
+
+  @override
+  void dispose() {
+    audioPlayer.dispose();
+    _timer?.cancel(); // Cancel the timer when the widget is disposed
+    super.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,12 +92,28 @@ class _OneMessagePageState extends State<OneMessagePage> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: SizedBox(
-                            width: 150,
-                            height: 150,
-                            child: Image.file(
-                              File(message.messageImage),
-                              //fit: BoxFit.scaleDown,
+                          child: GestureDetector(
+                            onTap: () async {
+                              if (isPlaying) {
+                                await audioPlayer.stop();
+                                setState(() {
+                                  isPlaying = false;
+                                });
+                              } else {
+                                await audioPlayer.play(
+                                    DeviceFileSource(message.messageSound));
+                                setState(() {
+                                  isPlaying = true;
+                                });
+                              }
+                            },
+                            child: SizedBox(
+                              width: 150,
+                              height: 150,
+                              child: Image.file(
+                                File(message.messageImage),
+                                //fit: BoxFit.scaleDown,
+                              ),
                             ),
                           ),
                         ),
@@ -175,11 +208,5 @@ class _OneMessagePageState extends State<OneMessagePage> {
     _timer?.cancel();
     _timer = null;
     setState(() {});
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel(); // Cancel the timer when the widget is disposed
-    super.dispose();
   }
 }

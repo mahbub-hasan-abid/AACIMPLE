@@ -432,7 +432,8 @@ class _MessageInputPageState extends State<MessageInputPage> {
         // Create the message
         DatabaseModel newMessage = DatabaseModel(
           keyfieldCode: DatabaseModel.generateKeyfieldCode(
-              _databaseController.mainHiveDatabase.value.length),
+              _databaseController.mainHiveDatabase.value.length.toInt() +
+                  _databaseController.oldHiveDatabase.value.length.toInt()),
           messageText: _messageTextController.text,
           messageImage: isImageFromInternet
               ? await _databaseController
@@ -452,7 +453,7 @@ class _MessageInputPageState extends State<MessageInputPage> {
           fromWhere: _fromWhere!,
         );
 
-        Get.snackbar('if', 'if', snackPosition: SnackPosition.BOTTOM);
+        // Get.snackbar('if', 'if', snackPosition: SnackPosition.BOTTOM);
 
         // Add message to database
         _databaseController.addMessageToMain(newMessage);

@@ -86,7 +86,7 @@ class HomePage extends StatelessWidget {
                     child: HomeButtonContainer(
                       homeButtonModel: HomeButtonModel(
                         icon: const Icon(Icons.attractions_rounded),
-                        label: " Activity",
+                        label: " Activities",
                       ),
                     ),
                   ),

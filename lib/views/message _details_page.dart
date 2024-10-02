@@ -95,7 +95,7 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
         onPressed: () {
           // DatabaseModel restoredMessage = widget.message.copyWith(
           //   keyfieldCode: DatabaseModel.generateKeyfieldCode(
-          //       _databaseController.mainHiveDatabase.value.length),
+          //       _databaseController.mainHiveDatabase.value.length.toInt() + oldHiveDatabase.value.length.toInt()),
           // );
           _databaseController.restoreMessageToMain(widget.index);
           Get.back();

@@ -11,3 +11,4 @@ Rx mainBgColor = Color(0xFF434261).obs;
 
 ///
 final primaryColor = Color(0xFF010080);
+final secondaryColor = (BuildContext context) => Theme.of(context).primaryColor;

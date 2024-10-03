@@ -1,20 +1,20 @@
+import 'package:aacimple/constant.dart';
 import 'package:aacimple/controllers/databasea_controller.dart';
+import 'package:aacimple/controllers/settings_controller.dart';
 import 'package:aacimple/models/database_model.dart';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart'; // For image picking
-import 'package:file_picker/file_picker.dart'; // For audio file picking
+import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
-
-import 'package:permission_handler/permission_handler.dart'; // For working with files
+import 'package:permission_handler/permission_handler.dart';
 
 class MessageInputPage extends StatefulWidget {
   @override
@@ -22,17 +22,18 @@ class MessageInputPage extends StatefulWidget {
 }
 
 class _MessageInputPageState extends State<MessageInputPage> {
+  final SettingsController settingsController =
+      Get.put<SettingsController>(SettingsController());
   final DatabaseController _databaseController = Get.put(DatabaseController());
 
-  // Controllers for text fields
   final TextEditingController _messageTextController = TextEditingController();
   final TextEditingController _fontSizeController = TextEditingController();
   final TextEditingController _fontColorController = TextEditingController();
   final TextEditingController _backgroundColorController =
       TextEditingController();
-  TextEditingController urlControllerImage = TextEditingController();
+  final TextEditingController urlControllerImage = TextEditingController();
+  final TextEditingController urlControllerAudio = TextEditingController();
 
-  TextEditingController urlControllerAudio = TextEditingController();
   String? _selectedImage;
   String? _selectedSound;
   Language? _selectedLanguage = Language.English;
@@ -44,8 +45,9 @@ class _MessageInputPageState extends State<MessageInputPage> {
   bool isAudioFromInternet = false;
   FlutterSoundRecorder? _recorder;
   AudioPlayer _audioPlayer = AudioPlayer();
-
   bool _isRecording = false;
+  bool isPlaying = false;
+
   @override
   void initState() {
     super.initState();
@@ -60,7 +62,6 @@ class _MessageInputPageState extends State<MessageInputPage> {
     super.dispose();
   }
 
-  // Image picker instance
   final ImagePicker _imagePicker = ImagePicker();
 
   @override
@@ -68,81 +69,288 @@ class _MessageInputPageState extends State<MessageInputPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add New Message'),
+        backgroundColor: const Color(0xFF010080),
       ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              TextField(
-                controller: _messageTextController,
-                decoration: const InputDecoration(labelText: 'Message Text'),
+          child: Card(
+            elevation: 5,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildTextField(
+                      ' Message Text',
+                      Icons.message, // Changed icon for consistency
+                      _messageTextController),
+                  _buildTextField(
+                      ' Font Size',
+                      Icons.format_size, // Updated icon for font size
+                      _fontSizeController,
+                      isNumber: true),
+                  _buildColorPicker(
+                    'Color of Font Text on Message Boxes',
+                    Icons.format_color_text,
+                    settingsController.fontColor,
+                  ),
+                  _buildColorPicker(
+                    'Color Background of Message Boxes',
+                    Icons.format_paint,
+                    settingsController.backgroundColor,
+                  ),
+
+                  const SizedBox(height: 20),
+                  _buildDropdownForLanguage(),
+
+                  const SizedBox(height: 20),
+                  _buildImagePicker(),
+                  const SizedBox(height: 20),
+                  _buildAudioPicker(),
+                  const SizedBox(height: 20),
+                  //  _buildFromWhereDropdown(),
+                  const SizedBox(height: 20),
+                  _buildToggleSwitch(
+                      Icons.image, 'Show Picture', _isPictureVisible, (val) {
+                    setState(() {
+                      _isPictureVisible = val;
+                    });
+                  }),
+                  _buildToggleSwitch(
+                      Icons.text_fields, 'Show Text', _isTextVisible, (val) {
+                    setState(() {
+                      _isTextVisible = val;
+                    });
+                  }),
+                  _buildToggleSwitch(
+                      Icons.volume_up, 'Enable Sound', _isSoundEnabled, (val) {
+                    setState(() {
+                      _isSoundEnabled = val;
+                    });
+                  }),
+                  const SizedBox(height: 20),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: _submitForm,
+                      child: const Text(
+                        'Save Message',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF010080),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 40, vertical: 12),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: _fontSizeController,
-                decoration: const InputDecoration(labelText: 'Font Size'),
-                keyboardType: TextInputType.number,
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: _fontColorController,
-                decoration: const InputDecoration(labelText: 'Font Color'),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: _backgroundColorController,
-                decoration:
-                    const InputDecoration(labelText: 'Background Color'),
-              ),
-              const SizedBox(height: 20),
-              _buildDropdownForLanguage(),
-              _buildImagePicker(),
-              _buildAudioPicker(),
-              _buildFromWhereDropdown(),
-              const SizedBox(height: 20),
-              _buildToggleSwitch('Show Picture', _isPictureVisible, (val) {
-                setState(() {
-                  _isPictureVisible = val;
-                });
-              }),
-              _buildToggleSwitch('Show Text', _isTextVisible, (val) {
-                setState(() {
-                  _isTextVisible = val;
-                });
-              }),
-              _buildToggleSwitch('Enable Sound', _isSoundEnabled, (val) {
-                setState(() {
-                  _isSoundEnabled = val;
-                });
-              }),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _submitForm,
-                child: const Text('Save Message'),
-              ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildDropdownForLanguage() {
-    return DropdownButton<Language>(
-      value: _selectedLanguage,
-      items: Language.values.map((Language language) {
-        return DropdownMenuItem<Language>(
-          value: language,
-          child: Text(language.toString().split('.').last),
+  Widget _buildTextField(
+      String label, IconData icon, TextEditingController controller,
+      {bool isNumber = false, bool isPassword = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextFormField(
+        keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+        controller: controller,
+        obscureText: isPassword,
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600, // Bold for better readability
+            color: Colors.black87,
+          ),
+          prefixIcon: Icon(icon, color: const Color(0xFF010080)),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(
+              color: Colors.black,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(
+              color: Colors.black,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildColorPicker(String title, IconData icon, Rx<Color> observable) {
+    return Obx(() => Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12.0),
+                border: Border.all()),
+            child: ListTile(
+              //contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              leading:
+                  Icon(icon, color: const Color(0xFF010080)), // Use theme color
+              title: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600, // Bold for better readability
+                  color: Colors.black87,
+                ),
+              ),
+              trailing: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: observable.value,
+                  border: Border.all(color: Colors.black),
+                ), // Use theme color
+                width: 40,
+                height: 40,
+              ),
+              onTap: () async {
+                Color? selectedColor =
+                    await _selectColor(Get.context!, observable.value);
+                if (selectedColor != null) {
+                  // Only change the color of the trailing container
+                  observable.value =
+                      selectedColor; // Update the observable directly
+                }
+              },
+            ),
+          ),
+        ));
+  }
+
+  Future<Color?> _selectColor(BuildContext context, Color initialColor) async {
+    Color selectedColor = initialColor;
+
+    return await showDialog<Color>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Text('Select Color',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ColorPicker(
+                  hexInputBar: true,
+                  colorPickerWidth: Get.width * 0.3,
+                  pickerColor: selectedColor,
+                  onColorChanged: (color) {
+                    selectedColor = color; // Update selected color
+                  },
+                  enableAlpha: true,
+                  displayThumbColor: true,
+                  pickerAreaHeightPercent: 0.6,
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: selectedColor,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Theme.of(context).primaryColor),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(null),
+              child: const Text('Cancel',
+                  style: TextStyle(color: Colors.redAccent)),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(selectedColor),
+              child: const Text('OK'),
+            ),
+          ],
         );
-      }).toList(),
-      onChanged: (value) {
-        setState(() {
-          _selectedLanguage = value;
-        });
       },
-      hint: const Text('Select Language'),
+    );
+  }
+
+  Widget _buildDropdownForLanguage() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.0),
+        border: Border.all(), // Added border color for better visibility
+      ),
+      padding: const EdgeInsets.symmetric(
+          horizontal: 15.0), // Added padding for better spacing
+      child: Row(
+        mainAxisAlignment:
+            MainAxisAlignment.spaceAround, // Space between label and dropdown
+        children: [
+          Icon(Icons.language_sharp, color: Color(0xFF010080)),
+          SizedBox(
+            width: 20,
+          ),
+          const Text(
+            'Select language:',
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600, // Bold for better readability
+              color: Colors.black87,
+            ),
+          ),
+          Expanded(
+            // Allows the DropdownButton to take the remaining space
+            child: DropdownButton<Language?>(
+              value: _selectedLanguage,
+              items: Language.values.map((Language language) {
+                return DropdownMenuItem<Language>(
+                  value: language,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12.0, horizontal: 16.0),
+                    child: Text(
+                      language.toString().split('.').last,
+                      style: const TextStyle(
+                          fontSize: 16.0, color: Colors.black87),
+                    ),
+                  ),
+                );
+              }).toList(),
+              onChanged: (Language? value) {
+                setState(() {
+                  _selectedLanguage = value; // Nullable value assignment
+                });
+              },
+              hint: Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 12.0, horizontal: 16.0),
+                child: Text(
+                  'Select Language:',
+                  style: TextStyle(color: Colors.grey[600]),
+                ),
+              ),
+              isExpanded: true,
+              underline: const SizedBox(), // Hides the default underline
+              iconEnabledColor: const Color(0xFF010080),
+              iconSize: 30.0,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -150,103 +358,158 @@ class _MessageInputPageState extends State<MessageInputPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        const Text(
+          'Select Image:',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12), // Added spacing between text and buttons
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('Image: '),
-            ElevatedButton(
-              onPressed: () async {
-                final XFile? pickedImage = await _imagePicker.pickImage(
-                  source: ImageSource.gallery,
-                );
-                if (pickedImage != null) {
-                  setState(() {
-                    isImageFromInternet = false;
-                    urlControllerImage.clear();
-                    _selectedImage = pickedImage.path;
-                  });
-                }
-              },
-              child: const Text('Gallery'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                final XFile? pickedImage = await _imagePicker.pickImage(
-                  source: ImageSource.camera,
-                );
-                if (pickedImage != null) {
-                  setState(() {
-                    isImageFromInternet = false;
-                    urlControllerImage.clear();
-                    _selectedImage = pickedImage.path;
-                  });
-                }
-              },
-              child: const Text('Camera'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                _showUrlInputDialog('image');
-              },
-              child: const Text('Internet '),
-            ),
+            _buildImageButton('Gallery', () async {
+              final XFile? pickedImage =
+                  await _imagePicker.pickImage(source: ImageSource.gallery);
+              if (pickedImage != null) {
+                setState(() {
+                  isImageFromInternet = false;
+                  urlControllerImage.clear();
+                  _selectedImage = pickedImage.path;
+                });
+              }
+            }),
+            _buildImageButton('Camera', () async {
+              final XFile? pickedImage =
+                  await _imagePicker.pickImage(source: ImageSource.camera);
+              if (pickedImage != null) {
+                setState(() {
+                  isImageFromInternet = false;
+                  urlControllerImage.clear();
+                  _selectedImage = pickedImage.path;
+                });
+              }
+            }),
+            _buildImageButton('Internet', () async {
+              _showUrlInputDialog('image');
+            }),
           ],
         ),
-        const SizedBox(height: 10), // Optional spacing
+        const SizedBox(height: 12), // Added spacing
         if (_selectedImage != null && urlControllerImage.text.isEmpty)
-          Image.file(
-            File(_selectedImage!),
-            width: 100, // Set the width for the image
-            height: 100, // Set the height for the image
-            fit: BoxFit.cover,
+          Container(
+            margin:
+                const EdgeInsets.only(top: 12.0), // Margin for better spacing
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: Image.file(
+                File(_selectedImage!),
+                width: 100,
+                height: 100,
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
         if (urlControllerImage.text.isNotEmpty && _selectedImage == null)
-          Image.network(
-            urlControllerImage.text,
-            width: 100,
-            height: 100,
-            fit: BoxFit.cover,
-          )
+          Container(
+            margin:
+                const EdgeInsets.only(top: 12.0), // Margin for better spacing
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: Image.network(
+                urlControllerImage.text,
+                width: 100,
+                height: 100,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
       ],
     );
   }
 
-  Future<void> _showUrlInputDialog(String audioORimage) async {
+  Widget _buildImageButton(String label, VoidCallback onPressed) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ElevatedButton(
+          onPressed: onPressed,
+          child: Text(
+            label,
+            style: const TextStyle(color: Colors.white),
+          ),
+          style: ElevatedButton.styleFrom(
+            padding:
+                const EdgeInsets.symmetric(vertical: 12), // Increased padding
+            backgroundColor: const Color(0xFF010080), // Consistent button color
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0), // Rounded corners
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showUrlInputDialog(String audioOrImage) async {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
         return SingleChildScrollView(
           child: AlertDialog(
-            title: audioORimage == 'audio'
-                ? const Text('Enter Image URL')
-                : const Text('Enter Audio URL'),
-            content: TextField(
-              controller: audioORimage == 'audio'
-                  ? urlControllerAudio
-                  : urlControllerImage,
-              decoration: InputDecoration(
-                  hintText: audioORimage == 'audio'
-                      ? 'Enter image URL'
-                      : 'Enter Audio URL'),
-              keyboardType: TextInputType.url,
+            title: Text(
+              'Enter ${audioOrImage == 'audio' ? 'Audio' : 'Image'} URL',
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            content: Container(
+              width:
+                  double.maxFinite, // Make the dialog content take full width
+              child: TextField(
+                controller: audioOrImage == 'audio'
+                    ? urlControllerAudio // Use appropriate controller
+                    : urlControllerImage,
+                decoration: InputDecoration(
+                  hintText:
+                      'Enter ${audioOrImage == 'audio' ? 'Audio' : 'Image'} URL',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: const BorderSide(color: Colors.blueAccent),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: const BorderSide(color: Colors.blue, width: 2),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 12.0, horizontal: 16.0),
+                ),
+                keyboardType: TextInputType.url,
+              ),
             ),
             actions: [
-              ElevatedButton(
+              TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.red,
+                  textStyle: const TextStyle(fontSize: 16), // Text size
+                ),
                 child: const Text('Cancel'),
               ),
-              ElevatedButton(
+              TextButton(
                 onPressed: () {
-                  setState(() {});
-                  audioORimage == 'audio'
-                      ? {
-                          isAudioFromInternet = true,
-                          _selectedSound = null,
-                        }
-                      : {isImageFromInternet = true, _selectedImage = null};
+                  print('------------------------------------');
+                  print('URL: ${urlControllerAudio.text}');
+                  print(_selectedSound);
+                  setState(() {
+                    audioOrImage == 'audio'
+                        ? {isAudioFromInternet = true, _selectedSound = null}
+                        : {isImageFromInternet = true, _selectedImage = null};
+                  });
                   Navigator.of(context).pop();
                 },
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.blueAccent,
+                  textStyle: const TextStyle(fontSize: 16),
+                ),
                 child: const Text('Submit'),
               ),
             ],
@@ -258,23 +521,17 @@ class _MessageInputPageState extends State<MessageInputPage> {
 
   Future<void> _openRecorder() async {
     try {
-      // Request microphone permission
       var status = await Permission.microphone.request();
-
       if (status.isGranted) {
         await _recorder!.openRecorder();
       } else {
-        print(
-            "Microphone permission not granted. Please allow access in settings.");
         throw RecordingPermissionException('Microphone permission not granted');
       }
     } catch (e) {
       print("Error opening recorder: $e");
-      throw e; // Rethrow the error if necessary
     }
   }
 
-  // Record audio and save it locally
   Future<void> _recordSound() async {
     try {
       if (!_isRecording) {
@@ -322,20 +579,108 @@ class _MessageInputPageState extends State<MessageInputPage> {
     }
   }
 
-  // Pick audio from local storage
-  Future<void> _pickSoundFromLocal() async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(type: FileType.audio);
-    if (result != null) {
+  Widget _buildAudioPicker() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Select Audio:',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _buildImageButton(
+                _isRecording ? 'Stop Recording' : 'Record a Sound',
+                _recordSound),
+            _buildImageButton('Device', () async {
+              FilePickerResult? result =
+                  await FilePicker.platform.pickFiles(type: FileType.audio);
+              if (result != null) {
+                setState(() {
+                  urlControllerAudio.clear();
+                  isAudioFromInternet = false;
+                  _selectedSound = result.files.single.path;
+                });
+              }
+            }),
+            _buildImageButton('Internet', () async {
+              _showUrlInputDialog('audio');
+            }),
+          ],
+        ),
+        const SizedBox(height: 10),
+        if (_selectedSound != null || urlControllerAudio.text.isNotEmpty)
+          ElevatedButton(
+            onPressed: () => isAudioFromInternet
+                ? _toggleAudioFromUrl(urlControllerAudio.text)
+                : _toggleAudio(),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    isPlaying ? Icons.stop : Icons.play_arrow,
+                    color: Colors.white,
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    isPlaying
+                        ? 'Stop Playing'
+                        : 'Play Selected Sound', // Toggle label
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              backgroundColor: isPlaying
+                  ? Colors.red // Change button color to red when playing
+                  : const Color(0xFF010080), // Default color
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+          )
+      ],
+    );
+  }
+
+  Future<void> _toggleAudioFromUrl(String url) async {
+    if (isPlaying) {
+      await _audioPlayer.stop(); // Stop the audio
+    } else {
+      await _audioPlayer.play(UrlSource(url)); // Play the audio
+    }
+    setState(() {
+      isPlaying = !isPlaying; // Toggle the isPlaying state
+    });
+  }
+
+  Future<void> _toggleAudio() async {
+    if (_selectedSound != null) {
+      if (isPlaying) {
+        await _audioPlayer.stop(); // Stop the audio
+      } else {
+        await _audioPlayer
+            .play(DeviceFileSource(_selectedSound!)); // Play the audio
+      }
       setState(() {
-        urlControllerAudio.clear();
-        isAudioFromInternet = false;
-        _selectedSound = result.files.single.path;
+        isPlaying = !isPlaying; // Toggle the isPlaying state
       });
+    } else {
+      print('No audio file selected');
     }
   }
 
-  // Play the selected audio
+  Future<void> _playAudioFromUrl(String url) async {
+    await _audioPlayer.play(UrlSource(url));
+  }
+
   Future<void> _playAudio() async {
     if (_selectedSound != null) {
       await _audioPlayer.play(DeviceFileSource(_selectedSound!));
@@ -344,52 +689,13 @@ class _MessageInputPageState extends State<MessageInputPage> {
     }
   }
 
-  // Play audio from the internet
-  Future<void> _playAudioFromUrl(String url) async {
-    await _audioPlayer.play(UrlSource(url));
-  }
-
-  Widget _buildAudioPicker() {
-    return SizedBox(
-      width: Get.width,
-      child: Row(
-        children: [
-          ElevatedButton(
-            onPressed: _recordSound,
-            child: Text(_isRecording ? 'Stop Recording' : 'Record a Sound'),
-          ),
-
-          // Button to pick a sound from local storage
-          ElevatedButton(
-            onPressed: _pickSoundFromLocal,
-            child: const Text('Pick Sound from Local Storage'),
-          ),
-          ElevatedButton(
-            onPressed: () => _showUrlInputDialog('audio'),
-            child: const Text('Internet'),
-          ),
-
-          // Button to play audio from URL
-
-          // Button to play the selected or recorded audio
-          ElevatedButton(
-            onPressed: () => isAudioFromInternet
-                ? _playAudioFromUrl(urlControllerAudio.text)
-                : _playAudio(),
-            child: const Text('Play Selected Sound'),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildFromWhereDropdown() {
     return DropdownButton<FromWhere>(
       value: _fromWhere,
-      items: FromWhere.values.map((FromWhere source) {
+      items: FromWhere.values.map((FromWhere fromWhere) {
         return DropdownMenuItem<FromWhere>(
-          value: source,
-          child: Text(source.toString().split('.').last),
+          value: fromWhere,
+          child: Text(fromWhere.toString().split('.').last),
         );
       }).toList(),
       onChanged: (value) {
@@ -397,138 +703,100 @@ class _MessageInputPageState extends State<MessageInputPage> {
           _fromWhere = value;
         });
       },
-      hint: const Text('Select Source'),
+      hint: const Text('Select From Where'),
+      isExpanded: true,
     );
   }
 
   Widget _buildToggleSwitch(
-      String label, bool value, Function(bool) onChanged) {
-    return SwitchListTile(
-      title: Text(label),
-      value: value,
-      onChanged: onChanged,
-    );
-  }
-
-  void _submitForm() async {
-    // Check if all fields are filled
-    if (_messageTextController.text.isNotEmpty &&
-        (_selectedSound != null || urlControllerAudio.text.isNotEmpty) &&
-        (_selectedImage != null || urlControllerImage.text.isNotEmpty)) {
-      bool isConnected = await _checkInternetConnection();
-      print(isConnected);
-
-      // If audio or image is from the internet, check connection
-      if ((isAudioFromInternet || isImageFromInternet) && !isConnected) {
-        Get.snackbar('Error', 'Please connect to the internet',
-            snackPosition: SnackPosition.BOTTOM);
-        return;
-      }
-
-      // Show loading indicator
-      _showLoadingDialog(context);
-
-      try {
-        // Create the message
-        DatabaseModel newMessage = DatabaseModel(
-          keyfieldCode: DatabaseModel.generateKeyfieldCode(
-              _databaseController.mainHiveDatabase.value.length.toInt() +
-                  _databaseController.oldHiveDatabase.value.length.toInt()),
-          messageText: _messageTextController.text,
-          messageImage: isImageFromInternet
-              ? await _databaseController
-                  .downloadAndStoreImageInHive(urlControllerImage.text)
-              : await _databaseController.saveImageToHive(_selectedImage!),
-          messageSound: isAudioFromInternet
-              ? await _databaseController
-                  .downloadAndStoreImageInHive(urlControllerAudio.text)
-              : await _databaseController.saveImageToHive(_selectedSound!),
-          language: _selectedLanguage!,
-          isPictureVisible: _isPictureVisible,
-          isTextVisible: _isTextVisible,
-          isSoundEnabled: _isSoundEnabled,
-          fontSize: int.parse(_fontSizeController.text),
-          fontColor: _fontColorController.text,
-          backgroundColor: _backgroundColorController.text,
-          fromWhere: _fromWhere!,
-        );
-
-        // Get.snackbar('if', 'if', snackPosition: SnackPosition.BOTTOM);
-
-        // Add message to database
-        _databaseController.addMessageToMain(newMessage);
-
-        // Clear form fields
-        _messageTextController.clear();
-        _fontSizeController.clear();
-        _fontColorController.clear();
-        _backgroundColorController.clear();
-        _selectedImage = null;
-        isImageFromInternet = false;
-        urlControllerAudio.clear;
-        urlControllerImage.clear;
-
-        setState(() {});
-
-        Get.snackbar('Success', 'Message added successfully',
-            snackPosition: SnackPosition.BOTTOM);
-      } catch (e) {
-        // Handle any error during the process
-        Get.snackbar('Error', 'An error occurred: $e',
-            snackPosition: SnackPosition.BOTTOM);
-      } finally {
-        // Dismiss the loading dialog
-        Navigator.pop(context);
-      }
-    } else {
-      Get.snackbar('Error', 'Please fill all fields',
-          snackPosition: SnackPosition.BOTTOM);
-    }
-  }
-
-// Check internet connection
-  Future<bool> _checkInternetConnection() async {
-    try {
-      // Get the current connectivity status (mobile, wifi, none)
-      var connectivityResult = await Connectivity().checkConnectivity();
-
-      // Log the result for debugging purposes (optional)
-      print("Connectivity Result: $connectivityResult");
-
-      // Check if the device is connected via mobile data or Wi-Fi
-      if (connectivityResult.contains(ConnectivityResult.mobile) ||
-          connectivityResult.contains(ConnectivityResult.wifi)) {
-        return true; // Connected to the internet
-      } else {
-        return false; // No internet connection
-      }
-    } catch (e) {
-      // Handle potential errors (e.g., platform-specific issues)
-      print("Error checking connectivity: $e");
-      return false; // Return false if any error occurs
-    }
-  }
-
-// Show loading dialog
-  void _showLoadingDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return const Dialog(
-          child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(width: 16.0),
-                Text("Processing..."),
-              ],
+      IconData icon, String label, bool value, Function(bool) onChanged) {
+    return Padding(
+      padding:
+          const EdgeInsets.symmetric(vertical: 8.0), // Padding between switches
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+            //vertical: 12.0,
+            horizontal: 16.0), // Inner padding for the container
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12), // Rounded corners
+          border: Border.all(), // Border with primary color
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: const Color(0xFF010080)),
+            SizedBox(
+              width: 30,
+            ), // Icon for better UI
+            Expanded(
+              child: Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600, // Bold for better readability
+                  color: Colors.black87,
+                ),
+              ),
             ),
-          ),
-        );
-      },
+            Transform.scale(
+              scale: 1.2, // Slightly increase the size of the switch
+              child: Switch(
+                value: value,
+                onChanged: onChanged,
+                activeColor: const Color(0xFF010080), // Switch active color
+                inactiveTrackColor:
+                    Colors.grey.withOpacity(0.5), // Inactive track color
+              ),
+            ),
+          ],
+        ),
+      ),
     );
+  }
+
+  Future<void> _submitForm() async {
+    if (_messageTextController.text.isNotEmpty) {
+      DatabaseModel newMessage = DatabaseModel(
+        keyfieldCode: DatabaseModel.generateKeyfieldCode(
+            _databaseController.mainHiveDatabase.value.length.toInt() +
+                _databaseController.oldHiveDatabase.value.length.toInt()),
+        messageText: _messageTextController.text,
+        messageImage: isImageFromInternet
+            ? await _databaseController
+                .downloadAndStoreImageInHive(urlControllerImage.text)
+            : await _databaseController.saveImageToHive(_selectedImage!),
+        messageSound: isAudioFromInternet
+            ? await _databaseController
+                .downloadAndStoreImageInHive(urlControllerAudio.text)
+            : await _databaseController.saveImageToHive(_selectedSound!),
+        language: _selectedLanguage!,
+        isPictureVisible: _isPictureVisible,
+        isTextVisible: _isTextVisible,
+        isSoundEnabled: _isSoundEnabled,
+        fontSize: int.parse(_fontSizeController.text),
+        fontColor: _fontColorController.text,
+        backgroundColor: _backgroundColorController.text,
+        fromWhere: _fromWhere!,
+      );
+      _databaseController.addMessageToMain(newMessage);
+      _clearFields();
+      Get.snackbar('Success', 'Message saved successfully');
+    } else {
+      Get.snackbar('Error', 'Please enter a message');
+    }
+  }
+
+  void _clearFields() {
+    _messageTextController.clear();
+    _fontSizeController.clear();
+    _fontColorController.clear();
+    _backgroundColorController.clear();
+    urlControllerImage.clear();
+    urlControllerAudio.clear();
+    setState(() {
+      _selectedImage = null;
+      _selectedSound = null;
+      isImageFromInternet = false;
+      isAudioFromInternet = false;
+    });
   }
 }

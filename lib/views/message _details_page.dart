@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:aacimple/controllers/databasea_controller.dart';
 import 'package:aacimple/models/database_model.dart';
 import 'package:aacimple/views/create_new_message_page.dart';
@@ -39,206 +38,404 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
     super.dispose();
   }
 
-  // Function to delete the message and save to OldMessages Database
   void _deleteMessage() {
-    Get.defaultDialog(
+    showCustomDialog(
+      context: context,
       title: 'Delete Message',
-      content: const Text("You will delete this message. Are you sure?"),
-      confirm: ElevatedButton(
-        onPressed: () {
-          _databaseController.deleteMessageFromMain(widget.index);
-
-          Get.back();
-          Get.back(); // Close dialog
-          Get.snackbar(
-              'Success', 'Message deleted and saved in OldMessages Database.');
-        },
-        child: const Text("YES"),
-      ),
-      cancel: ElevatedButton(
-        onPressed: () => Get.back(),
-        child: const Text("NO"),
-      ),
+      contentText: "You will delete this message. Are you sure?",
+      onConfirm: () {
+        _databaseController.deleteMessageFromMain(widget.index);
+        Get.back(); // Close the dialog
+        Get.back(); // Go back to the previous screen
+        Get.snackbar(
+            'Success', 'Message deleted and saved in OldMessages Database.');
+      },
+      onCancel: () => Get.back(),
+      confirmText: "YES",
+      cancelText: "NO",
     );
   }
 
   void _editMessage(DatabaseModel msg) {
-    Get.defaultDialog(
+    showCustomDialog(
+      context: context,
       title: 'Update Message',
-      content: const Text("Do you want to update this message?"),
-      confirm: ElevatedButton(
-        onPressed: () {
-          Get.off(() => UpdateMessage(
-                message: msg,
-                index: widget.index,
-              ));
-          // Logic to update message in the Main Database
-          // _databaseController.updateMessageInMain(widget.message);
-          //Get.back(); // Close dialog
-          // Get.snackbar('Success', 'Message updated successfully.');
-        },
-        child: const Text("YES"),
-      ),
-      cancel: ElevatedButton(
-        onPressed: () => Get.back(),
-        child: const Text("NO"),
-      ),
+      contentText: "Do you want to update this message?",
+      onConfirm: () {
+        Get.off(() => UpdateMessage(
+              message: msg,
+              index: widget.index,
+            ));
+      },
+      onCancel: () => Get.back(),
+      confirmText: "YES",
+      cancelText: "NO",
     );
   }
 
   void _restoreMessage() {
-    Get.defaultDialog(
+    showCustomDialog(
+      context: context,
       title: 'Restore Message',
-      content: const Text(
-          "Do you want to restore this message to the Main Database?"),
-      confirm: ElevatedButton(
-        onPressed: () {
-          // DatabaseModel restoredMessage = widget.message.copyWith(
-          //   keyfieldCode: DatabaseModel.generateKeyfieldCode(
-          //       _databaseController.mainHiveDatabase.value.length.toInt() + oldHiveDatabase.value.length.toInt()),
-          // );
-          _databaseController.restoreMessageToMain(widget.index);
-          Get.back();
-          Get.back(); // Close dialog
-          // Close dialog
-          Get.snackbar('Success', 'Message restored to the Main Database.');
-        },
-        child: const Text("YES"),
-      ),
-      cancel: ElevatedButton(
-        onPressed: () => Get.back(),
-        child: const Text("NO"),
-      ),
+      contentText: "Do you want to restore this message to the Main Database?",
+      onConfirm: () {
+        _databaseController.restoreMessageToMain(widget.index);
+        Get.back(); // Close the dialog
+        Get.back(); // Go back to the previous screen
+        Get.snackbar('Success', 'Message restored to the Main Database.');
+      },
+      onCancel: () => Get.back(),
+      confirmText: "YES",
+      cancelText: "NO",
     );
   }
 
-  // Function to save a new message to Main Database
   void _saveNewMessage() {
-    Get.defaultDialog(
+    showCustomDialog(
+      context: context,
       title: 'Create New Message',
-      content: const Text(
-          "Do you want to create a new message to the Main Database?"),
-      confirm: ElevatedButton(
-        onPressed: () {
-          Get.off(() => MessageInputPage());
-        },
-        child: const Text("YES"),
-      ),
-      cancel: ElevatedButton(
-        onPressed: () => Get.back(),
-        child: const Text("NO"),
-      ),
+      contentText: "Do you want to create a new message to the Main Database?",
+      onConfirm: () {
+        Get.off(() => MessageInputPage());
+      },
+      onCancel: () => Get.back(),
+      confirmText: "YES",
+      cancelText: "NO",
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    // Get the screen dimensions
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    // Responsive sizes
+    final double imageSize = screenWidth * 0.5; // 40% of screen width
+    final double textSize = screenWidth * 0.02; // 4% of screen width
+    final double buttonFontSize = screenWidth * 0.02; // 4% of screen width
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Message Details'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Row(
-                children: [
-                  // Left half: Image display
-                  Expanded(
-                    child: SizedBox(
-                      height: 200,
-                      width: 200,
-                      child: Image.file(File(widget.message.messageImage),
-                          fit: BoxFit.scaleDown),
-                    ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child:
+                Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+              // Left half: Image display
+              Center(
+                child: Expanded(
+                  child: SizedBox(
+                    height: imageSize,
+                    width: imageSize,
+                    child: Image.file(File(widget.message.messageImage),
+                        fit: BoxFit.scaleDown),
                   ),
-
-                  // Right half: Message text and audio control
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Display message text
-                          const Text(
-                            'Message Text:',
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 8.0),
-                          Text(
-                            widget.message.keyfieldCode,
-                            style: const TextStyle(fontSize: 16.0),
-                          ),
-                          const SizedBox(height: 16.0),
-                          Text(
-                            widget.message.messageText,
-                            style: const TextStyle(fontSize: 16.0),
-                          ),
-                          const SizedBox(height: 16.0),
-
-                          // Audio playback controls
-                          ElevatedButton.icon(
-                            onPressed: () async {
-                              if (isPlaying) {
-                                await audioPlayer.stop();
-                                setState(() {
-                                  isPlaying = false;
-                                });
-                              } else {
-                                await audioPlayer.play(DeviceFileSource(
-                                    widget.message.messageSound));
-                                setState(() {
-                                  isPlaying = true;
-                                });
-                              }
-                            },
-                            icon:
-                                Icon(isPlaying ? Icons.stop : Icons.play_arrow),
-                            label:
-                                Text(isPlaying ? 'Stop Audio' : 'Play Audio'),
-                          ),
-                          widget.fromMainOrOld == 'main'
-                              ? Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    ElevatedButton(
-                                      onPressed: () =>
-                                          _editMessage(widget.message),
-                                      child: const Text('Edit/Update'),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: _saveNewMessage,
-                                      child: const Text('Create New'),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: _deleteMessage,
-                                      child: const Text('Delete'),
-                                    ),
-                                  ],
-                                )
-                              : ElevatedButton(
-                                  onPressed: _restoreMessage,
-                                  child: const Text('Restore'),
-                                ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
 
-            // Bottom: Action buttons in a row
-          ],
-        ),
+              // Right half: Message text and audio control
+              Center(
+                child: Expanded(
+                  child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Display message text
+                            Text(
+                              'Message Text : ${widget.message.messageText} ',
+                              style: TextStyle(
+                                fontSize: textSize,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              'Code : ${widget.message.keyfieldCode} ',
+                              style: TextStyle(
+                                fontSize: textSize,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+
+                            const SizedBox(height: 16.0),
+
+                            // Audio playback controls
+                            ElevatedButton.icon(
+                              onPressed: () async {
+                                if (isPlaying) {
+                                  await audioPlayer.stop();
+                                  setState(() {
+                                    isPlaying = false;
+                                  });
+                                } else {
+                                  await audioPlayer.play(DeviceFileSource(
+                                      widget.message.messageSound));
+                                  setState(() {
+                                    isPlaying = true;
+                                  });
+                                }
+                              },
+                              icon: Icon(
+                                isPlaying ? Icons.stop : Icons.play_arrow,
+                                size: buttonFontSize,
+                              ),
+                              label: Text(
+                                isPlaying ? 'Stop Audio' : 'Play Audio',
+                                style: TextStyle(fontSize: buttonFontSize),
+                              ),
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.blue),
+                                foregroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.white), // White text color
+                                minimumSize: MaterialStateProperty.all<Size>(
+                                    Size(200, 50)), // Uniform size
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                ),
+                                padding: MaterialStateProperty.all<EdgeInsets>(
+                                    EdgeInsets.symmetric(
+                                        vertical: 12.0, horizontal: 16.0)),
+                                elevation:
+                                    MaterialStateProperty.all<double>(5.0),
+                              ),
+                            ),
+                            widget.fromMainOrOld == 'main'
+                                ? Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: ElevatedButton(
+                                          onPressed: () =>
+                                              _editMessage(widget.message),
+                                          child: Text(
+                                            'Edit/Update',
+                                            style: TextStyle(
+                                                fontSize: buttonFontSize),
+                                          ),
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all<
+                                                    Color>(Colors.orange),
+                                            foregroundColor: MaterialStateProperty
+                                                .all<Color>(Colors
+                                                    .white), // White text color
+                                            minimumSize:
+                                                MaterialStateProperty.all<Size>(
+                                                    Size(200,
+                                                        50)), // Uniform size
+                                            shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15.0),
+                                              ),
+                                            ),
+                                            padding: MaterialStateProperty.all<
+                                                    EdgeInsets>(
+                                                EdgeInsets.symmetric(
+                                                    vertical: 12.0,
+                                                    horizontal: 16.0)),
+                                            elevation: MaterialStateProperty
+                                                .all<double>(5.0),
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: ElevatedButton(
+                                          onPressed: _saveNewMessage,
+                                          child: Text(
+                                            'Create New',
+                                            style: TextStyle(
+                                                fontSize: buttonFontSize),
+                                          ),
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all<
+                                                    Color>(Colors.green),
+                                            foregroundColor: MaterialStateProperty
+                                                .all<Color>(Colors
+                                                    .white), // White text color
+                                            minimumSize:
+                                                MaterialStateProperty.all<Size>(
+                                                    Size(200,
+                                                        50)), // Uniform size
+                                            shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15.0),
+                                              ),
+                                            ),
+                                            padding: MaterialStateProperty.all<
+                                                    EdgeInsets>(
+                                                EdgeInsets.symmetric(
+                                                    vertical: 12.0,
+                                                    horizontal: 16.0)),
+                                            elevation: MaterialStateProperty
+                                                .all<double>(5.0),
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: ElevatedButton(
+                                          onPressed: _deleteMessage,
+                                          child: Text(
+                                            'Delete',
+                                            style: TextStyle(
+                                                fontSize: buttonFontSize),
+                                          ),
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all<
+                                                    Color>(Colors.red),
+                                            foregroundColor: MaterialStateProperty
+                                                .all<Color>(Colors
+                                                    .white), // White text color
+                                            minimumSize:
+                                                MaterialStateProperty.all<Size>(
+                                                    Size(200,
+                                                        50)), // Uniform size
+                                            shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15.0),
+                                              ),
+                                            ),
+                                            padding: MaterialStateProperty.all<
+                                                    EdgeInsets>(
+                                                EdgeInsets.symmetric(
+                                                    vertical: 12.0,
+                                                    horizontal: 16.0)),
+                                            elevation: MaterialStateProperty
+                                                .all<double>(5.0),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ElevatedButton(
+                                      onPressed: _restoreMessage,
+                                      child: Text(
+                                        'Restore',
+                                        style:
+                                            TextStyle(fontSize: buttonFontSize),
+                                      ),
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Colors.blue),
+                                        foregroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Colors
+                                                    .white), // White text color
+                                        minimumSize:
+                                            MaterialStateProperty.all<Size>(
+                                                Size(200, 50)), // Uniform size
+                                        shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15.0),
+                                          ),
+                                        ),
+                                        padding: MaterialStateProperty.all<
+                                                EdgeInsets>(
+                                            EdgeInsets.symmetric(
+                                                vertical: 12.0,
+                                                horizontal: 16.0)),
+                                        elevation:
+                                            MaterialStateProperty.all<double>(
+                                                5.0),
+                                      ),
+                                    ),
+                                  ),
+                          ],
+                        ),
+                      )),
+                ),
+              ),
+            ]),
+          ),
+        ],
       ),
     );
   }
+}
+
+void showCustomDialog({
+  required BuildContext context,
+  required String title,
+  required String contentText,
+  required VoidCallback onConfirm,
+  required VoidCallback onCancel,
+  required String confirmText,
+  required String cancelText,
+}) {
+  final screenWidth = MediaQuery.of(context).size.width;
+  final double dialogPadding =
+      screenWidth * 0.03; // Padding as 6% of screen width
+  final double buttonFontSize =
+      screenWidth * 0.035; // Font size relative to screen width
+
+  Get.defaultDialog(
+    title: title,
+    titleStyle:
+        TextStyle(fontSize: screenWidth * 0.03, fontWeight: FontWeight.bold),
+    content: Padding(
+      padding: EdgeInsets.all(dialogPadding),
+      child: Text(
+        contentText,
+        style: TextStyle(fontSize: buttonFontSize),
+        textAlign: TextAlign.center,
+      ),
+    ),
+    confirm: ElevatedButton(
+      onPressed: onConfirm,
+      child: Text(
+        confirmText,
+        style: TextStyle(fontSize: buttonFontSize, color: Colors.white),
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.green, // Button background color
+        minimumSize: Size(150, 50), // Minimum size for uniform buttons
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+      ),
+    ),
+    cancel: ElevatedButton(
+      onPressed: onCancel,
+      child: Text(
+        cancelText,
+        style: TextStyle(fontSize: buttonFontSize, color: Colors.white),
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.red, // Button background color
+        minimumSize: Size(150, 50), // Minimum size for uniform buttons
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+      ),
+    ),
+  );
 }

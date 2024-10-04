@@ -1,25 +1,28 @@
 import 'package:aacimple/models/home_screen_button_model.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class HomeButtonContainer extends StatelessWidget {
   final HomeButtonModel homeButtonModel;
+  final double containerWidth; // New parameter for width
+  final double containerHeight; // New parameter for height
 
   HomeButtonContainer({
     super.key,
     required this.homeButtonModel,
+    required this.containerWidth,
+    required this.containerHeight,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: Get.width * .2,
-      height: Get.height * .2,
-      padding: const EdgeInsets.all(8.0),
+      width: containerWidth, // Use the received width
+      height: containerHeight, // Use the received height
+      padding: const EdgeInsets.all(10.0),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: Color(0xFF010080),
+          color: const Color(0xFF010080),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -27,15 +30,17 @@ class HomeButtonContainer extends StatelessWidget {
           children: [
             Icon(
               homeButtonModel.icon.icon,
-              size: Get.width * 0.05,
+              size: containerWidth * 0.3, // Icon size based on the width
               color: Colors.white,
             ),
             const SizedBox(height: 5),
             Center(
               child: Text(
                 homeButtonModel.label,
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: Get.width * 0.02,
+                  fontSize:
+                      containerWidth * 0.10, // Text size based on the width
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),

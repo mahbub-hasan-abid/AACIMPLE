@@ -31,22 +31,16 @@ class GeneralSettingsPage extends StatelessWidget {
             children: [
               _buildSectionTitle('Display Settings'),
               _buildSettingSwitch(
-                'See only Pictures on the Message Boxes',
+                'See Pictures on the Message Boxes',
                 Icons.image,
-                controller.showOnlyPictures,
+                controller.showPictures,
                 controller.updateShowPictures,
               ),
               _buildSettingSwitch(
-                'See only Text on the Message Boxes',
+                'See Text on the Message Boxes',
                 Icons.text_fields,
-                controller.showOnlyText,
+                controller.showText,
                 controller.updateShowText,
-              ),
-              _buildSettingSwitch(
-                'See Nothing on the Message Boxes',
-                Icons.visibility_off,
-                controller.showNothing,
-                controller.updateShowNothing,
               ),
               _buildSettingSwitch(
                 'Randomize Message Boxes',
@@ -82,26 +76,6 @@ class GeneralSettingsPage extends StatelessWidget {
                 controller.fontFamily,
                 controller.updateFontFamily,
               ),
-              // Obx(() {
-              //   return Text(
-              //     'J Q O T t a A ;',
-              //     style: TextStyle(fontSize: controller.fontSize.value),
-              //   );
-              // }),
-
-              // ),
-              // Text(
-              //   'J',
-              //   style: TextStyle(fontFamily: 'ARIAL', fontSize: 40),
-              // ),
-              // Text(
-              //   'J',
-              //   style: TextStyle(fontFamily: 'Tahoma', fontSize: 40),
-              // ),
-              // Text(
-              //   'J A',
-              //   style: TextStyle(fontFamily: 'calibri', fontSize: 40),
-              // ),
               _buildSlider(
                 'Size of Fonts',
                 Icons.text_fields,

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:aacimple/controllers/databasea_controller.dart';
 import 'package:aacimple/controllers/settings_controller.dart';
@@ -31,20 +32,26 @@ class _OneMessagePageState extends State<OneMessagePage> {
   @override
   void dispose() {
     audioPlayer.dispose();
-    _timer?.cancel(); // Cancel the timer when the widget is disposed
-    super.dispose();
+    _timer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    // Get screen dimensions
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    // Determine responsive sizes
+    final imageSize = screenWidth * 0.15; // 40% of screen width
+    final buttonSize = screenWidth * 0.05; // 10% of screen width
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Activity Screen'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            // Go back to the previous screen
             Get.back();
           },
         ),
@@ -78,7 +85,7 @@ class _OneMessagePageState extends State<OneMessagePage> {
                   // Message Image
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: settingsController.backgroundColor.value,
                       borderRadius: BorderRadius.circular(16.0),
                       boxShadow: const [
                         BoxShadow(
@@ -88,40 +95,51 @@ class _OneMessagePageState extends State<OneMessagePage> {
                         ),
                       ],
                     ),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: GestureDetector(
-                            onTap: () async {
-                              if (isPlaying) {
-                                await audioPlayer.stop();
-                                setState(() {
-                                  isPlaying = false;
-                                });
-                              } else {
-                                await audioPlayer.play(
-                                    DeviceFileSource(message.messageSound));
-                                setState(() {
-                                  isPlaying = true;
-                                });
-                              }
-                            },
-                            child: SizedBox(
-                              width: 150,
-                              height: 150,
-                              child: Image.file(
-                                File(message.messageImage),
-                                //fit: BoxFit.scaleDown,
+                    child: GestureDetector(
+                      onTap: () async {
+                        if (settingsController.listenToSound.value) {
+                          if (isPlaying) {
+                            await audioPlayer.stop();
+                            setState(() {
+                              isPlaying = false;
+                            });
+                          } else {
+                            await audioPlayer
+                                .play(DeviceFileSource(message.messageSound));
+                            setState(() {
+                              isPlaying = true;
+                            });
+                          }
+                        }
+                      },
+                      child: Column(
+                        children: [
+                          if (settingsController.showPictures.value)
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SizedBox(
+                                width: imageSize,
+                                height: imageSize,
+                                child: Image.file(
+                                  File(message.messageImage),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(message.messageText),
-                        )
-                      ],
+                          if (settingsController.showText.value)
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                message.messageText,
+                                style: TextStyle(
+                                  color: settingsController.fontColor.value,
+                                  fontSize: settingsController.fontSize.value,
+                                  fontFamily:
+                                      settingsController.fontFamily.value,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
                   ),
 
@@ -131,24 +149,37 @@ class _OneMessagePageState extends State<OneMessagePage> {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.arrow_left),
-                        iconSize: 40,
+                        iconSize: buttonSize,
                         onPressed: previousMessage,
                       ),
                       IconButton(
                         icon: const Icon(Icons.arrow_right),
-                        iconSize: 40,
+                        iconSize: buttonSize,
                         onPressed: nextMessage,
                       ),
                     ],
                   ),
                   const SizedBox(height: 20),
 
-                  // Start/Stop Presentation Button
+                  // Start/Stop Presentation Button styled with theme
                   ElevatedButton(
                     onPressed: togglePresentation,
-                    child: Text(isPresentationRunning
-                        ? 'Stop Presentation'
-                        : 'Start Presentation'),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize:
+                          Size(screenWidth * 0.3, 50), // Responsive width
+                      backgroundColor:
+                          Theme.of(context).primaryColor, // Theme color
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                    ),
+                    child: Text(
+                      isPresentationRunning
+                          ? 'Stop Presentation'
+                          : 'Start Presentation',
+                      style: TextStyle(
+                          fontSize: screenWidth * 0.03, color: Colors.white),
+                    ),
                   ),
                 ],
               ),
@@ -187,17 +218,24 @@ class _OneMessagePageState extends State<OneMessagePage> {
     isPresentationRunning = true;
     setState(() {});
 
-    // Start the presentation with the given duration
     _timer = Timer.periodic(
       Duration(
           seconds: settingsController.durationForPresentation.value.toInt()),
       (timer) {
-        if (currentIndex < controller.mainHiveDatabaseMessages.length - 1) {
+        if (settingsController.randomize.value) {
+          final random = Random();
           setState(() {
-            currentIndex++;
+            currentIndex =
+                random.nextInt(controller.mainHiveDatabaseMessages.length);
           });
         } else {
-          stopPresentation(); // Stop when we reach the last message
+          if (currentIndex < controller.mainHiveDatabaseMessages.length - 1) {
+            setState(() {
+              currentIndex++;
+            });
+          } else {
+            stopPresentation();
+          }
         }
       },
     );

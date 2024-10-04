@@ -39,187 +39,136 @@ class _ThreeMessagePageState extends State<ThreeMessagePage> {
             ),
         ],
       ),
-      body: Obx(() {
-        if (controller.mainHiveDatabaseMessages.isEmpty) {
-          return const Center(
-            child: Text(
-              'No messages available',
-              style: TextStyle(fontSize: 16),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          // Use constraints to get the available height and width
+          double screenWidth = constraints.maxWidth;
+          double screenHeight = constraints.maxHeight;
+
+          return Obx(() {
+            if (controller.mainHiveDatabaseMessages.isEmpty) {
+              return const Center(
+                child: Text(
+                  'No messages available',
+                  style: TextStyle(fontSize: 16),
+                ),
+              );
+            }
+
+            int secondIndex = currentIndex + 1;
+            int thirdIndex = currentIndex + 2;
+            bool hasSecondImage =
+                secondIndex < controller.mainHiveDatabaseMessages.length;
+            bool hasThirdImage =
+                thirdIndex < controller.mainHiveDatabaseMessages.length;
+
+            final message1 = controller.mainHiveDatabaseMessages[currentIndex];
+            final message2 = hasSecondImage
+                ? controller.mainHiveDatabaseMessages[secondIndex]
+                : null;
+            final message3 = hasThirdImage
+                ? controller.mainHiveDatabaseMessages[thirdIndex]
+                : null;
+
+            double imageSize =
+                screenWidth / 3 - 16; // Adjust image size dynamically
+
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        // First Image Container
+                        if (message1 != null)
+                          buildImageContainer(message1, imageSize),
+
+                        // Second Image Container (if exists)
+                        if (message2 != null)
+                          buildImageContainer(message2, imageSize),
+
+                        // Third Image Container (if exists)
+                        if (message3 != null)
+                          buildImageContainer(message3, imageSize),
+                      ],
+                    ),
+
+                    // Navigation Buttons
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.arrow_left),
+                          iconSize: 40,
+                          onPressed: previousMessage,
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.arrow_right),
+                          iconSize: 40,
+                          onPressed: nextMessage,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Start/Stop Presentation Button
+                    ElevatedButton(
+                      onPressed: togglePresentation,
+                      child: Text(isPresentationRunning
+                          ? 'Stop Presentation'
+                          : 'Start Presentation'),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          });
+        },
+      ),
+    );
+  }
+
+  Widget buildImageContainer(message, double imageSize) {
+    return Expanded(
+      child: Container(
+        margin: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16.0),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 8,
+              spreadRadius: 2,
             ),
-          );
-        }
-
-        // Ensure we don't exceed the list length
-        int secondIndex = currentIndex + 1;
-        int thirdIndex = currentIndex + 2;
-        bool hasSecondImage =
-            secondIndex < controller.mainHiveDatabaseMessages.length;
-        bool hasThirdImage =
-            thirdIndex < controller.mainHiveDatabaseMessages.length;
-
-        final message1 = controller.mainHiveDatabaseMessages[currentIndex];
-        final message2 = hasSecondImage
-            ? controller.mainHiveDatabaseMessages[secondIndex]
-            : null;
-        final message3 = hasThirdImage
-            ? controller.mainHiveDatabaseMessages[thirdIndex]
-            : null;
-
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Center(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                      // First Image Container
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16.0),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 8,
-                                spreadRadius: 2,
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: SizedBox(
-                                  width: 100,
-                                  height: 100,
-                                  child: Image.file(
-                                    File(message1.messageImage),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(message1.messageText),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      // Second Image Container (if exists)
-                      if (message2 != null)
-                        Expanded(
-                          child: Container(
-                            margin: const EdgeInsets.all(8.0),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16.0),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 8,
-                                  spreadRadius: 2,
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: SizedBox(
-                                    width: 100,
-                                    height: 100,
-                                    child: Image.file(
-                                      File(message2.messageImage),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(message2!.messageText),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-
-                      // Third Image Container (if exists)
-                      if (message3 != null)
-                        Expanded(
-                          child: Container(
-                            margin: const EdgeInsets.all(8.0),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16.0),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 8,
-                                  spreadRadius: 2,
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: SizedBox(
-                                    width: 100,
-                                    height: 100,
-                                    child: Image.file(
-                                      File(message3.messageImage),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(message3!.messageText),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-
-                  // Navigation Buttons
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_left),
-                        iconSize: 40,
-                        onPressed: previousMessage,
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.arrow_right),
-                        iconSize: 40,
-                        onPressed: nextMessage,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Start/Stop Presentation Button
-                  ElevatedButton(
-                    onPressed: togglePresentation,
-                    child: Text(isPresentationRunning
-                        ? 'Stop Presentation'
-                        : 'Start Presentation'),
-                  ),
-                ],
+          ],
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: imageSize,
+                height: imageSize,
+                child: Image.file(
+                  File(message.messageImage),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-        );
-      }),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                message.messageText,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

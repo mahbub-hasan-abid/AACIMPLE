@@ -21,13 +21,15 @@ class _FourMessagePageState extends State<FourMessagePage> {
 
   @override
   Widget build(BuildContext context) {
+    // Use MediaQuery to get screen dimensions
+    final screenSize = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Activity Screen'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            // Go back to the previous screen
             Get.back();
           },
         ),
@@ -39,107 +41,115 @@ class _FourMessagePageState extends State<FourMessagePage> {
             ),
         ],
       ),
-      body: Obx(() {
-        if (controller.mainHiveDatabaseMessages.isEmpty) {
-          return const Center(
-            child: Text(
-              'No messages available',
-              style: TextStyle(fontSize: 16),
-            ),
-          );
-        }
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          // Calculate sizes dynamically based on available height
+          final itemHeight = constraints.maxHeight * 0.25;
+          final imageSize = constraints.maxWidth * 0.4;
 
-        // Ensure we don't exceed the list length
-        int secondIndex = currentIndex + 1;
-        int thirdIndex = currentIndex + 2;
-        int fourthIndex = currentIndex + 3;
+          return Obx(() {
+            if (controller.mainHiveDatabaseMessages.isEmpty) {
+              return const Center(
+                child: Text(
+                  'No messages available',
+                  style: TextStyle(fontSize: 16),
+                ),
+              );
+            }
 
-        bool hasSecondImage =
-            secondIndex < controller.mainHiveDatabaseMessages.length;
-        bool hasThirdImage =
-            thirdIndex < controller.mainHiveDatabaseMessages.length;
-        bool hasFourthImage =
-            fourthIndex < controller.mainHiveDatabaseMessages.length;
+            int secondIndex = currentIndex + 1;
+            int thirdIndex = currentIndex + 2;
+            int fourthIndex = currentIndex + 3;
 
-        final message1 = controller.mainHiveDatabaseMessages[currentIndex];
-        final message2 = hasSecondImage
-            ? controller.mainHiveDatabaseMessages[secondIndex]
-            : null;
-        final message3 = hasThirdImage
-            ? controller.mainHiveDatabaseMessages[thirdIndex]
-            : null;
-        final message4 = hasFourthImage
-            ? controller.mainHiveDatabaseMessages[fourthIndex]
-            : null;
+            bool hasSecondImage =
+                secondIndex < controller.mainHiveDatabaseMessages.length;
+            bool hasThirdImage =
+                thirdIndex < controller.mainHiveDatabaseMessages.length;
+            bool hasFourthImage =
+                fourthIndex < controller.mainHiveDatabaseMessages.length;
 
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Center(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildImageContainer(message1),
-                      ),
-                      if (message2 != null)
+            final message1 = controller.mainHiveDatabaseMessages[currentIndex];
+            final message2 = hasSecondImage
+                ? controller.mainHiveDatabaseMessages[secondIndex]
+                : null;
+            final message3 = hasThirdImage
+                ? controller.mainHiveDatabaseMessages[thirdIndex]
+                : null;
+            final message4 = hasFourthImage
+                ? controller.mainHiveDatabaseMessages[fourthIndex]
+                : null;
+
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Display first two images and text side by side
+                    Row(
+                      children: [
                         Expanded(
-                          child: _buildImageContainer(message2),
+                          child: _buildImageContainer(message1, imageSize),
                         ),
-                    ],
-                  ),
-                  const SizedBox(height: 8.0),
-                  Row(
-                    children: [
-                      if (message3 != null)
-                        Expanded(
-                          child: _buildImageContainer(message3),
-                        ),
-                      if (message4 != null)
-                        Expanded(
-                          child: _buildImageContainer(message4),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
+                        if (message2 != null)
+                          Expanded(
+                            child: _buildImageContainer(message2, imageSize),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 8.0),
 
-                  // Navigation Buttons
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_left),
-                        iconSize: 40,
-                        onPressed: previousMessage,
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.arrow_right),
-                        iconSize: 40,
-                        onPressed: nextMessage,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
+                    // Display next two images and text side by side
+                    Row(
+                      children: [
+                        if (message3 != null)
+                          Expanded(
+                            child: _buildImageContainer(message3, imageSize),
+                          ),
+                        if (message4 != null)
+                          Expanded(
+                            child: _buildImageContainer(message4, imageSize),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
 
-                  // Start/Stop Presentation Button
-                  ElevatedButton(
-                    onPressed: togglePresentation,
-                    child: Text(isPresentationRunning
-                        ? 'Stop Presentation'
-                        : 'Start Presentation'),
-                  ),
-                ],
+                    // Navigation Buttons
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.arrow_left),
+                          iconSize: 40,
+                          onPressed: previousMessage,
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.arrow_right),
+                          iconSize: 40,
+                          onPressed: nextMessage,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Start/Stop Presentation Button
+                    ElevatedButton(
+                      onPressed: togglePresentation,
+                      child: Text(isPresentationRunning
+                          ? 'Stop Presentation'
+                          : 'Start Presentation'),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ),
-        );
-      }),
+            );
+          });
+        },
+      ),
     );
   }
 
-  Widget _buildImageContainer(message) {
+  Widget _buildImageContainer(message, double imageSize) {
     return Container(
       margin: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
@@ -158,8 +168,8 @@ class _FourMessagePageState extends State<FourMessagePage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: SizedBox(
-              width: 150,
-              height: 150,
+              width: imageSize,
+              height: imageSize,
               child: Image.file(
                 File(message.messageImage),
                 fit: BoxFit.cover,
@@ -168,7 +178,12 @@ class _FourMessagePageState extends State<FourMessagePage> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(message.messageText),
+            child: Text(
+              message.messageText,
+              style: const TextStyle(fontSize: 16),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ],
       ),
@@ -178,7 +193,7 @@ class _FourMessagePageState extends State<FourMessagePage> {
   void nextMessage() {
     setState(() {
       if (currentIndex + 4 < controller.mainHiveDatabaseMessages.length) {
-        currentIndex += 4; // Increment by 4 to show next four images
+        currentIndex += 4;
       }
     });
   }
@@ -186,7 +201,7 @@ class _FourMessagePageState extends State<FourMessagePage> {
   void previousMessage() {
     setState(() {
       if (currentIndex - 4 >= 0) {
-        currentIndex -= 4; // Decrement by 4 to show previous four images
+        currentIndex -= 4;
       }
     });
   }
@@ -203,17 +218,16 @@ class _FourMessagePageState extends State<FourMessagePage> {
     isPresentationRunning = true;
     setState(() {});
 
-    // Start the presentation with the given duration
     _timer = Timer.periodic(
       Duration(
           seconds: settingsController.durationForPresentation.value.toInt()),
       (timer) {
         if (currentIndex + 4 < controller.mainHiveDatabaseMessages.length) {
           setState(() {
-            currentIndex += 4; // Move to the next set of four images
+            currentIndex += 4;
           });
         } else {
-          stopPresentation(); // Stop when we reach the last message
+          stopPresentation();
         }
       },
     );
@@ -228,7 +242,7 @@ class _FourMessagePageState extends State<FourMessagePage> {
 
   @override
   void dispose() {
-    _timer?.cancel(); // Cancel the timer when the widget is disposed
+    _timer?.cancel();
     super.dispose();
   }
 }

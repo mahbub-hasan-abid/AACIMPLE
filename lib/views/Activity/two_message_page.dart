@@ -21,6 +21,11 @@ class _TwoMessagePageState extends State<TwoMessagePage> {
 
   @override
   Widget build(BuildContext context) {
+    // Get the size of the screen
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final boxHeight = (screenHeight / 2);
+    final boxWidth = (screenWidth / 3);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Activity Screen'),
@@ -61,118 +66,117 @@ class _TwoMessagePageState extends State<TwoMessagePage> {
 
         return Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Center(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                      // First Image Container
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16.0),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 8,
-                                spreadRadius: 2,
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: SizedBox(
-                                  width: 150,
-                                  height: 150,
-                                  child: Image.file(
-                                    File(message1.messageImage),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(message1.messageText),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              // Dynamically calculate image size based on available width
 
-                      // Second Image Container (if exists)
-                      if (message2 != null)
-                        Expanded(
-                          child: Container(
-                            margin: const EdgeInsets.all(8.0),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16.0),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 8,
-                                  spreadRadius: 2,
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: SizedBox(
-                                    width: 150,
-                                    height: 150,
+              return Center(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Message display row
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.arrow_left),
+                            iconSize: 40,
+                            onPressed: previousMessage,
+                          ),
+                          // First Image Container
+                          Expanded(
+                            child: Container(
+                              width: boxWidth,
+                              height: boxHeight,
+                              margin: const EdgeInsets.all(8.0),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16.0),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 8,
+                                    spreadRadius: 2,
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    width: boxWidth,
+                                    height: boxHeight * .85, // Keep it square
                                     child: Image.file(
-                                      File(message2.messageImage),
-                                      fit: BoxFit.cover,
+                                      File(message1.messageImage),
+                                      fit: BoxFit.scaleDown,
                                     ),
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(message2!.messageText),
-                                ),
-                              ],
+                                  Text(message1.messageText),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
+
+                          // Second Image Container (if exists)
+                          if (message2 != null)
+                            Expanded(
+                              child: Container(
+                                height: boxHeight,
+                                width: boxWidth,
+                                margin: const EdgeInsets.all(8.0),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16.0),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 8,
+                                      spreadRadius: 2,
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                      width: boxWidth,
+                                      height: boxHeight * .85, // Keep it square
+                                      child: Image.file(
+                                        File(message2.messageImage),
+                                        fit: BoxFit.scaleDown,
+                                      ),
+                                    ),
+                                    Text(message2!.messageText),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          IconButton(
+                            icon: const Icon(Icons.arrow_right),
+                            iconSize: 40,
+                            onPressed: nextMessage,
+                          ),
+                        ],
+                      ),
+
+                      // Navigation Buttons
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.center,
+                      //   children: [
+                      //     ElevatedButton(
+                      //       onPressed: togglePresentation,
+                      //       child: Text(isPresentationRunning
+                      //           ? 'Stop Presentation'
+                      //           : 'Start Presentation'),
+                      //     ),
+                      //   ],
+                      // ),
+                      // const SizedBox(height: 20),
+
+                      // Start/Stop Presentation Button
                     ],
                   ),
-
-                  // Navigation Buttons
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_left),
-                        iconSize: 40,
-                        onPressed: previousMessage,
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.arrow_right),
-                        iconSize: 40,
-                        onPressed: nextMessage,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Start/Stop Presentation Button
-                  ElevatedButton(
-                    onPressed: togglePresentation,
-                    child: Text(isPresentationRunning
-                        ? 'Stop Presentation'
-                        : 'Start Presentation'),
-                  ),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           ),
         );
       }),

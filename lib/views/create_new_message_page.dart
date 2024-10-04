@@ -287,6 +287,7 @@ class _MessageInputPageState extends State<MessageInputPage> {
       },
     );
   }
+  
 
   Widget _buildDropdownForLanguage() {
     return Container(
@@ -496,9 +497,7 @@ class _MessageInputPageState extends State<MessageInputPage> {
               ),
               TextButton(
                 onPressed: () {
-                  print('------------------------------------');
-                  print('URL: ${urlControllerAudio.text}');
-                  print(_selectedSound);
+                 
                   setState(() {
                     audioOrImage == 'audio'
                         ? {isAudioFromInternet = true, _selectedSound = null}

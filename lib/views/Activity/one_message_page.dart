@@ -42,7 +42,6 @@ class _OneMessagePageState extends State<OneMessagePage> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    // Determine responsive sizes
     final imageSize = screenWidth * 0.15; // 40% of screen width
     final buttonSize = screenWidth * 0.05; // 10% of screen width
 

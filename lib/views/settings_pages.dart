@@ -82,7 +82,7 @@ class GeneralSettingsPage extends StatelessWidget {
                 controller.fontSize,
                 controller.updateFontSize,
                 min: 8.0,
-                max: 36.0,
+                max: 28.0,
               ),
               _buildSlider(
                 'Duration for Presentation',

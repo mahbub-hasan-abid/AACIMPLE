@@ -144,7 +144,7 @@ class _TwoMessagePageState extends State<TwoMessagePage> {
                                         fit: BoxFit.scaleDown,
                                       ),
                                     ),
-                                    Text(message2!.messageText),
+                                    Text(message2.messageText),
                                   ],
                                 ),
                               ),

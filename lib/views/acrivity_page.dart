@@ -3,23 +3,62 @@ import 'package:aacimple/views/Activity/one_message_page.dart';
 import 'package:aacimple/views/Activity/six_b_message_page.dart';
 import 'package:aacimple/views/Activity/six_message_page.dart';
 import 'package:aacimple/views/Activity/three_message_page.dart';
+import 'package:aacimple/views/message_presentation_page.dart';
 import 'package:aacimple/views/Activity/twelve_message_page.dart';
 import 'package:aacimple/views/Activity/two_message_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ActivityPage extends StatelessWidget {
+  // final List<Map<String, dynamic>> activityItems = [
+  //   {'text': '1', 'page': OneMessagePage()},
+  //   {'text': '2', 'page': TwoMessagePage()},
+  //   {'text': '3', 'page': ThreeMessagePage()},
+  //   {'text': '4', 'page': FourMessagePage()},
+  //   {'text': '6', 'page': SixMessagePage()},
+  //   {'text': '6B', 'page': SixBMessagePage()},
+  //   {'text': '12', 'page': TwelveMessagePage()},
+  //   {'text': 'Back', 'page': null}, // Back button doesn't have a page
+  // ];
   final List<Map<String, dynamic>> activityItems = [
-    {'text': '1', 'page': OneMessagePage()},
-    {'text': '2', 'page': TwoMessagePage()},
-    {'text': '3', 'page': ThreeMessagePage()},
-    {'text': '4', 'page': FourMessagePage()},
-    {'text': '6', 'page': SixMessagePage()},
-    {'text': '6B', 'page': SixBMessagePage()},
-    {'text': '12', 'page': TwelveMessagePage()},
+    {
+      'text': '1',
+      'page': const ActivityMessagePresentationPage(
+          totalImage: 1, rowNumber: 1, columnNumber: 1)
+    },
+    {
+      'text': '2',
+      'page': const ActivityMessagePresentationPage(
+          totalImage: 2, rowNumber: 1, columnNumber: 2)
+    },
+    {
+      'text': '3',
+      'page': const ActivityMessagePresentationPage(
+          totalImage: 3, rowNumber: 1, columnNumber: 3)
+    },
+    {
+      'text': '4',
+      'page': const ActivityMessagePresentationPage(
+          totalImage: 4, rowNumber: 2, columnNumber: 2)
+    },
+
+    {
+      'text': '6',
+      'page': const ActivityMessagePresentationPage(
+          totalImage: 6, rowNumber: 2, columnNumber: 3)
+    },
+    {
+      'text': '6B',
+      'page': const ActivityMessagePresentationPage(
+          totalImage: 6, rowNumber: 1, columnNumber: 6)
+    },
+    {
+      'text': '12',
+      'page': const ActivityMessagePresentationPage(
+          totalImage: 12, rowNumber: 2, columnNumber: 6)
+    },
     {'text': 'Back', 'page': null}, // Back button doesn't have a page
   ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

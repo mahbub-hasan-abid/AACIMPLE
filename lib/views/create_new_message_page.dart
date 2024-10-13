@@ -1,3 +1,4 @@
+import 'package:aacimple/common/responsive.dart';
 import 'package:aacimple/constant.dart';
 import 'package:aacimple/controllers/databasea_controller.dart';
 import 'package:aacimple/controllers/settings_controller.dart';
@@ -66,9 +67,19 @@ class _MessageInputPageState extends State<MessageInputPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = Responsive.isMobile(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add New Message'),
+        title: Text(
+          'Add New Message',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: isMobile
+                ? mTapBarTextSize.toDouble()
+                : tTapBarTextSize.toDouble(),
+          ),
+        ),
         backgroundColor: const Color(0xFF010080),
       ),
       body: SingleChildScrollView(
@@ -87,30 +98,34 @@ class _MessageInputPageState extends State<MessageInputPage> {
                   _buildTextField(
                       ' Message Text',
                       Icons.message, // Changed icon for consistency
-                      _messageTextController),
+                      _messageTextController,
+                      context),
                   _buildTextField(
                       ' Font Size',
                       Icons.format_size, // Updated icon for font size
                       _fontSizeController,
+                      context,
                       isNumber: true),
                   _buildColorPicker(
                     'Color of Font Text on Message Boxes',
                     Icons.format_color_text,
                     settingsController.fontColor,
+                    context,
                   ),
                   _buildColorPicker(
                     'Color Background of Message Boxes',
                     Icons.format_paint,
                     settingsController.backgroundColor,
+                    context,
                   ),
 
                   const SizedBox(height: 20),
-                  _buildDropdownForLanguage(),
+                  _buildDropdownForLanguage(context),
 
                   const SizedBox(height: 20),
-                  _buildImagePicker(),
+                  _buildImagePicker(context),
                   const SizedBox(height: 20),
-                  _buildAudioPicker(),
+                  _buildAudioPicker(context),
                   const SizedBox(height: 20),
                   //  _buildFromWhereDropdown(),
                   const SizedBox(height: 20),
@@ -119,26 +134,31 @@ class _MessageInputPageState extends State<MessageInputPage> {
                     setState(() {
                       _isPictureVisible = val;
                     });
-                  }),
+                  }, context),
                   _buildToggleSwitch(
                       Icons.text_fields, 'Show Text', _isTextVisible, (val) {
                     setState(() {
                       _isTextVisible = val;
                     });
-                  }),
+                  }, context),
                   _buildToggleSwitch(
                       Icons.volume_up, 'Enable Sound', _isSoundEnabled, (val) {
                     setState(() {
                       _isSoundEnabled = val;
                     });
-                  }),
+                  }, context),
                   const SizedBox(height: 20),
                   Center(
                     child: ElevatedButton(
                       onPressed: _submitForm,
-                      child: const Text(
+                      child: Text(
                         'Save Message',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: Responsive.isMobile(context)
+                              ? mHeadingTextSize
+                              : tHeadingTextSize,
+                        ),
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF010080),
@@ -156,8 +176,8 @@ class _MessageInputPageState extends State<MessageInputPage> {
     );
   }
 
-  Widget _buildTextField(
-      String label, IconData icon, TextEditingController controller,
+  Widget _buildTextField(String label, IconData icon,
+      TextEditingController controller, BuildContext contex,
       {bool isNumber = false, bool isPassword = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -168,7 +188,9 @@ class _MessageInputPageState extends State<MessageInputPage> {
         decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(
-            fontSize: 16,
+            fontSize: Responsive.isMobile(context)
+                ? mHeadingTextSize.toDouble()
+                : tHeadingTextSize.toDouble(),
             fontWeight: FontWeight.w600, // Bold for better readability
             color: Colors.black87,
           ),
@@ -190,7 +212,8 @@ class _MessageInputPageState extends State<MessageInputPage> {
     );
   }
 
-  Widget _buildColorPicker(String title, IconData icon, Rx<Color> observable) {
+  Widget _buildColorPicker(
+      String title, IconData icon, Rx<Color> observable, BuildContext context) {
     return Obx(() => Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Container(
@@ -203,8 +226,10 @@ class _MessageInputPageState extends State<MessageInputPage> {
                   Icon(icon, color: const Color(0xFF010080)), // Use theme color
               title: Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 16,
+                style: TextStyle(
+                  fontSize: Responsive.isMobile(context)
+                      ? mHeadingTextSize.toDouble()
+                      : tHeadingTextSize.toDouble(),
                   fontWeight: FontWeight.w600, // Bold for better readability
                   color: Colors.black87,
                 ),
@@ -242,8 +267,12 @@ class _MessageInputPageState extends State<MessageInputPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          title: const Text('Select Color',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          title: Text('Select Color',
+              style: TextStyle(
+                  fontSize: Responsive.isMobile(context)
+                      ? mHeadingTextSize.toDouble()
+                      : tHeadingTextSize.toDouble(),
+                  fontWeight: FontWeight.bold)),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -287,9 +316,8 @@ class _MessageInputPageState extends State<MessageInputPage> {
       },
     );
   }
-  
 
-  Widget _buildDropdownForLanguage() {
+  Widget _buildDropdownForLanguage(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.0),
@@ -305,10 +333,12 @@ class _MessageInputPageState extends State<MessageInputPage> {
           SizedBox(
             width: 20,
           ),
-          const Text(
+          Text(
             'Select language:',
-            style: const TextStyle(
-              fontSize: 16,
+            style: TextStyle(
+              fontSize: Responsive.isMobile(context)
+                  ? mHeadingTextSize.toDouble()
+                  : tHeadingTextSize.toDouble(),
               fontWeight: FontWeight.w600, // Bold for better readability
               color: Colors.black87,
             ),
@@ -325,8 +355,11 @@ class _MessageInputPageState extends State<MessageInputPage> {
                         vertical: 12.0, horizontal: 16.0),
                     child: Text(
                       language.toString().split('.').last,
-                      style: const TextStyle(
-                          fontSize: 16.0, color: Colors.black87),
+                      style: TextStyle(
+                          fontSize: Responsive.isMobile(context)
+                              ? mHeadingTextSize.toDouble()
+                              : tHeadingTextSize.toDouble(),
+                          color: Colors.black87),
                     ),
                   ),
                 );
@@ -355,13 +388,18 @@ class _MessageInputPageState extends State<MessageInputPage> {
     );
   }
 
-  Widget _buildImagePicker() {
+  Widget _buildImagePicker(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Select Image:',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: Responsive.isMobile(context)
+                ? mHeadingTextSize.toDouble()
+                : tHeadingTextSize.toDouble(),
+          ),
         ),
         const SizedBox(height: 12), // Added spacing between text and buttons
         Row(
@@ -377,7 +415,7 @@ class _MessageInputPageState extends State<MessageInputPage> {
                   _selectedImage = pickedImage.path;
                 });
               }
-            }),
+            }, context),
             _buildImageButton('Camera', () async {
               final XFile? pickedImage =
                   await _imagePicker.pickImage(source: ImageSource.camera);
@@ -388,10 +426,10 @@ class _MessageInputPageState extends State<MessageInputPage> {
                   _selectedImage = pickedImage.path;
                 });
               }
-            }),
+            }, context),
             _buildImageButton('Internet', () async {
-              _showUrlInputDialog('image');
-            }),
+              _showUrlInputDialog('image', context);
+            }, context),
           ],
         ),
         const SizedBox(height: 12), // Added spacing
@@ -403,8 +441,8 @@ class _MessageInputPageState extends State<MessageInputPage> {
               borderRadius: BorderRadius.circular(8.0),
               child: Image.file(
                 File(_selectedImage!),
-                width: 100,
-                height: 100,
+                width: Responsive.isMobile(context) ? 100 : 200,
+                height: Responsive.isMobile(context) ? 100 : 200,
                 fit: BoxFit.cover,
               ),
             ),
@@ -417,8 +455,8 @@ class _MessageInputPageState extends State<MessageInputPage> {
               borderRadius: BorderRadius.circular(8.0),
               child: Image.network(
                 urlControllerImage.text,
-                width: 100,
-                height: 100,
+                width: Responsive.isMobile(context) ? 100 : 200,
+                height: Responsive.isMobile(context) ? 100 : 200,
                 fit: BoxFit.cover,
               ),
             ),
@@ -427,7 +465,8 @@ class _MessageInputPageState extends State<MessageInputPage> {
     );
   }
 
-  Widget _buildImageButton(String label, VoidCallback onPressed) {
+  Widget _buildImageButton(
+      String label, VoidCallback onPressed, BuildContext context) {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -435,7 +474,11 @@ class _MessageInputPageState extends State<MessageInputPage> {
           onPressed: onPressed,
           child: Text(
             label,
-            style: const TextStyle(color: Colors.white),
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: Responsive.isMobile(context)
+                    ? mBodyTextSize
+                    : tBodyTextSize),
           ),
           style: ElevatedButton.styleFrom(
             padding:
@@ -450,68 +493,75 @@ class _MessageInputPageState extends State<MessageInputPage> {
     );
   }
 
-  Future<void> _showUrlInputDialog(String audioOrImage) async {
+  Future<void> _showUrlInputDialog(
+      String audioOrImage, BuildContext context) async {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
-        return SingleChildScrollView(
-          child: AlertDialog(
-            title: Text(
-              'Enter ${audioOrImage == 'audio' ? 'Audio' : 'Image'} URL',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            content: Container(
-              width:
-                  double.maxFinite, // Make the dialog content take full width
-              child: TextField(
-                controller: audioOrImage == 'audio'
-                    ? urlControllerAudio // Use appropriate controller
-                    : urlControllerImage,
-                decoration: InputDecoration(
-                  hintText:
-                      'Enter ${audioOrImage == 'audio' ? 'Audio' : 'Image'} URL',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: const BorderSide(color: Colors.blueAccent),
+        return Center(
+          child: SingleChildScrollView(
+            child: AlertDialog(
+              title: Text(
+                'Enter ${audioOrImage == 'audio' ? 'Audio' : 'Image'} URL',
+                style: TextStyle(
+                    fontSize: Responsive.isMobile(context)
+                        ? mHeadingTextSize.toDouble()
+                        : tHeadingTextSize.toDouble(),
+                    fontWeight: FontWeight.bold),
+              ),
+              content: Container(
+                width:
+                    double.maxFinite, // Make the dialog content take full width
+                child: TextField(
+                  controller: audioOrImage == 'audio'
+                      ? urlControllerAudio // Use appropriate controller
+                      : urlControllerImage,
+                  decoration: InputDecoration(
+                    hintText:
+                        'Enter ${audioOrImage == 'audio' ? 'Audio' : 'Image'} URL',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: const BorderSide(color: Colors.blueAccent),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide:
+                          const BorderSide(color: Colors.blue, width: 2),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 12.0, horizontal: 16.0),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: const BorderSide(color: Colors.blue, width: 2),
+                  keyboardType: TextInputType.url,
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.red,
+                    textStyle: const TextStyle(fontSize: 16), // Text size
                   ),
-                  contentPadding: const EdgeInsets.symmetric(
-                      vertical: 12.0, horizontal: 16.0),
+                  child: const Text('Cancel'),
                 ),
-                keyboardType: TextInputType.url,
-              ),
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      audioOrImage == 'audio'
+                          ? {isAudioFromInternet = true, _selectedSound = null}
+                          : {isImageFromInternet = true, _selectedImage = null};
+                    });
+                    Navigator.of(context).pop();
+                  },
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.blueAccent,
+                    textStyle: const TextStyle(fontSize: 16),
+                  ),
+                  child: const Text('Submit'),
+                ),
+              ],
             ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.red,
-                  textStyle: const TextStyle(fontSize: 16), // Text size
-                ),
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                 
-                  setState(() {
-                    audioOrImage == 'audio'
-                        ? {isAudioFromInternet = true, _selectedSound = null}
-                        : {isImageFromInternet = true, _selectedImage = null};
-                  });
-                  Navigator.of(context).pop();
-                },
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.blueAccent,
-                  textStyle: const TextStyle(fontSize: 16),
-                ),
-                child: const Text('Submit'),
-              ),
-            ],
           ),
         );
       },
@@ -578,20 +628,26 @@ class _MessageInputPageState extends State<MessageInputPage> {
     }
   }
 
-  Widget _buildAudioPicker() {
+  Widget _buildAudioPicker(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Select Audio:',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: Responsive.isMobile(context)
+                ? mHeadingTextSize
+                : tHeadingTextSize,
+          ),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             _buildImageButton(
                 _isRecording ? 'Stop Recording' : 'Record a Sound',
-                _recordSound),
+                _recordSound,
+                context),
             _buildImageButton('Device', () async {
               FilePickerResult? result =
                   await FilePicker.platform.pickFiles(type: FileType.audio);
@@ -602,10 +658,10 @@ class _MessageInputPageState extends State<MessageInputPage> {
                   _selectedSound = result.files.single.path;
                 });
               }
-            }),
+            }, context),
             _buildImageButton('Internet', () async {
-              _showUrlInputDialog('audio');
-            }),
+              _showUrlInputDialog('audio', context);
+            }, context),
           ],
         ),
         const SizedBox(height: 10),
@@ -707,8 +763,8 @@ class _MessageInputPageState extends State<MessageInputPage> {
     );
   }
 
-  Widget _buildToggleSwitch(
-      IconData icon, String label, bool value, Function(bool) onChanged) {
+  Widget _buildToggleSwitch(IconData icon, String label, bool value,
+      Function(bool) onChanged, BuildContext context) {
     return Padding(
       padding:
           const EdgeInsets.symmetric(vertical: 8.0), // Padding between switches
@@ -729,8 +785,10 @@ class _MessageInputPageState extends State<MessageInputPage> {
             Expanded(
               child: Text(
                 label,
-                style: const TextStyle(
-                  fontSize: 16,
+                style: TextStyle(
+                  fontSize: Responsive.isMobile(context)
+                      ? mHeadingTextSize
+                      : tHeadingTextSize,
                   fontWeight: FontWeight.w600, // Bold for better readability
                   color: Colors.black87,
                 ),

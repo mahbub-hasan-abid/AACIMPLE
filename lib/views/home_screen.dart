@@ -1,3 +1,4 @@
+import 'package:aacimple/common/responsive.dart';
 import 'package:aacimple/constant.dart';
 import 'package:aacimple/models/home_screen_button_model.dart';
 import 'package:aacimple/views/acrivity_page.dart';
@@ -10,17 +11,11 @@ import 'package:aacimple/views/utils/home_button_cointainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
 
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Exit dialog function
-
-// Import this for SystemNavigator
-
     Future<void> _showExitDialog(BuildContext context) async {
-      // Get screen dimensions
       final double screenWidth = MediaQuery.of(context).size.width;
       final double screenHeight = MediaQuery.of(context).size.height;
 

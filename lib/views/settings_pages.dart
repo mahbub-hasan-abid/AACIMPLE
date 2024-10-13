@@ -1,3 +1,5 @@
+import 'package:aacimple/common/responsive.dart';
+import 'package:aacimple/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
@@ -7,17 +9,21 @@ import 'package:aacimple/controllers/settings_controller.dart';
 class GeneralSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final isMobile = Responsive.isMobile(context);
+
     final SettingsController controller =
         Get.put<SettingsController>(SettingsController());
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'General Settings',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
-            fontSize: 22,
+            fontSize: isMobile
+                ? mTapBarTextSize.toDouble()
+                : tTapBarTextSize.toDouble(),
           ),
         ),
         backgroundColor: Color(0xFF010080),
@@ -29,47 +35,43 @@ class GeneralSettingsPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildSectionTitle('Display Settings'),
+              _buildSectionTitle('Display Settings', context),
               _buildSettingSwitch(
-                'See Pictures on the Message Boxes',
-                Icons.image,
-                controller.showPictures,
-                controller.updateShowPictures,
-              ),
+                  'See Pictures on the Message Boxes',
+                  Icons.image,
+                  controller.showPictures,
+                  controller.updateShowPictures,
+                  context),
               _buildSettingSwitch(
-                'See Text on the Message Boxes',
-                Icons.text_fields,
-                controller.showText,
-                controller.updateShowText,
-              ),
-              _buildSettingSwitch(
-                'Randomize Message Boxes',
-                Icons.shuffle,
-                controller.randomize,
-                controller.updateRandomize,
-              ),
+                  'See Text on the Message Boxes',
+                  Icons.text_fields,
+                  controller.showText,
+                  controller.updateShowText,
+                  context),
+              _buildSettingSwitch('Randomize Message Boxes', Icons.shuffle,
+                  controller.randomize, controller.updateRandomize, context),
               SizedBox(height: 32),
-              _buildSectionTitle('Audio Settings'),
+              _buildSectionTitle('Audio Settings', context),
               _buildSettingSwitch(
-                'Listen to Sound from Message Boxes',
-                Icons.volume_up,
-                controller.listenToSound,
-                controller.updateListenToSound,
-              ),
+                  'Listen to Sound from Message Boxes',
+                  Icons.volume_up,
+                  controller.listenToSound,
+                  controller.updateListenToSound,
+                  context),
               SizedBox(height: 32),
-              _buildSectionTitle('Appearance Settings'),
+              _buildSectionTitle('Appearance Settings', context),
               _buildColorPicker(
-                'Color of Font Text on Message Boxes',
-                Icons.format_color_text,
-                controller.fontColor,
-                controller.updateFontColor,
-              ),
+                  'Color of Font Text on Message Boxes',
+                  Icons.format_color_text,
+                  controller.fontColor,
+                  controller.updateFontColor,
+                  context),
               _buildColorPicker(
-                'Color Background of Message Boxes',
-                Icons.format_paint,
-                controller.backgroundColor,
-                controller.updateBackgroundColor,
-              ),
+                  'Color Background of Message Boxes',
+                  Icons.format_paint,
+                  controller.backgroundColor,
+                  controller.updateBackgroundColor,
+                  context),
               _buildFontFamilyPicker(
                 'Font Family Selection',
                 Icons.font_download,
@@ -81,7 +83,7 @@ class GeneralSettingsPage extends StatelessWidget {
                 Icons.text_fields,
                 controller.fontSize,
                 controller.updateFontSize,
-                min: 8.0,
+                min: 12.0,
                 max: 28.0,
               ),
               _buildSlider(
@@ -100,13 +102,15 @@ class GeneralSettingsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(String title, BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      padding: EdgeInsets.symmetric(vertical: 12.0),
       child: Text(
         title,
         style: TextStyle(
-          fontSize: 20,
+          fontSize: Responsive.isMobile(context)
+              ? mHeadingTextSize.toDouble()
+              : tHeadingTextSize.toDouble(),
           fontWeight: FontWeight.bold,
           color: Colors.blueGrey[800],
         ),
@@ -115,7 +119,7 @@ class GeneralSettingsPage extends StatelessWidget {
   }
 
   Widget _buildSettingSwitch(String title, IconData icon, RxBool observable,
-      ValueChanged<bool> onChanged) {
+      ValueChanged<bool> onChanged, BuildContext context) {
     return Obx(() => Card(
           margin: EdgeInsets.symmetric(vertical: 8),
           elevation: 4,
@@ -129,7 +133,11 @@ class GeneralSettingsPage extends StatelessWidget {
               leading: Icon(icon, color: const Color(0xFF010080)),
               title: Text(
                 title,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                    fontSize: Responsive.isMobile(context)
+                        ? mBodyTextSize
+                        : tBodyTextSize,
+                    fontWeight: FontWeight.w500),
               ),
               trailing: Switch(
                 value: observable.value,
@@ -141,7 +149,7 @@ class GeneralSettingsPage extends StatelessWidget {
                     '$title has been ${value ? "enabled" : "disabled"}',
                     snackPosition: SnackPosition.BOTTOM,
                     backgroundColor: Colors.blueAccent,
-                    colorText: Colors.white,
+                    colorText: const Color.fromARGB(255, 37, 37, 37),
                     duration: Duration(seconds: 2),
                   );
                 },
@@ -155,7 +163,7 @@ class GeneralSettingsPage extends StatelessWidget {
   }
 
   Widget _buildColorPicker(String title, IconData icon, Rx<Color> observable,
-      ValueChanged<Color> onChanged) {
+      ValueChanged<Color> onChanged, BuildContext context) {
     return Obx(() => Card(
           margin: EdgeInsets.symmetric(vertical: 8),
           elevation: 4,
@@ -165,7 +173,11 @@ class GeneralSettingsPage extends StatelessWidget {
           child: ListTile(
             contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             leading: Icon(icon, color: Color(0xFF010080)),
-            title: Text(title, style: TextStyle(fontSize: 16)),
+            title: Text(title,
+                style: TextStyle(
+                    fontSize: Responsive.isMobile(context)
+                        ? mBodyTextSize
+                        : tBodyTextSize)),
             trailing: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
@@ -204,7 +216,11 @@ class GeneralSettingsPage extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
           ),
           title: Text('Select Color',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              style: TextStyle(
+                  fontSize: Responsive.isMobile(context)
+                      ? mBodyTextSize
+                      : tBodyTextSize,
+                  fontWeight: FontWeight.bold)),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,

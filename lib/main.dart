@@ -1,6 +1,5 @@
 import 'package:aacimple/models/database_model.dart';
-import 'package:aacimple/views/database_page.dart';
-import 'package:aacimple/views/splash_screen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';

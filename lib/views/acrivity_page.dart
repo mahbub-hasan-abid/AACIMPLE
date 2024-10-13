@@ -1,3 +1,5 @@
+import 'package:aacimple/common/responsive.dart';
+import 'package:aacimple/constant.dart';
 import 'package:aacimple/views/Activity/four_message_page.dart';
 import 'package:aacimple/views/Activity/one_message_page.dart';
 import 'package:aacimple/views/Activity/six_b_message_page.dart';
@@ -61,9 +63,19 @@ class ActivityPage extends StatelessWidget {
   ];
   @override
   Widget build(BuildContext context) {
+    final isMobile = Responsive.isMobile(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Activities"),
+        title: Text(
+          "Activities",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: isMobile
+                ? mTapBarTextSize.toDouble()
+                : tTapBarTextSize.toDouble(),
+          ),
+        ),
       ),
       body: Center(
         child: Padding(

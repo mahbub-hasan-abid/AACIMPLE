@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+import 'package:aacimple/common/responsive.dart';
+import 'package:aacimple/constant.dart';
 import 'package:aacimple/controllers/databasea_controller.dart';
 import 'package:aacimple/controllers/settings_controller.dart';
 import 'package:aacimple/models/database_model.dart';
@@ -54,12 +56,21 @@ class _ActivityMessagePresentationPageState
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-
+    final isMobile = Responsive.isMobile(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Activity Screen'),
+        title: Text(
+          'Activity Screen',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: isMobile
+                ? mTapBarTextSize.toDouble()
+                : tTapBarTextSize.toDouble(),
+          ),
+        ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back),
           onPressed: () {
             Get.back();
           },
@@ -67,11 +78,17 @@ class _ActivityMessagePresentationPageState
         actions: [
           isPresentationRunning
               ? IconButton(
-                  icon: const Icon(Icons.stop),
+                  icon: Icon(
+                    Icons.stop,
+                    size: Responsive.isMobile(context) ? 20 : 50,
+                  ),
                   onPressed: stopPresentation,
                 )
               : IconButton(
-                  icon: const Icon(Icons.play_arrow),
+                  icon: Icon(
+                    Icons.play_arrow,
+                    size: Responsive.isMobile(context) ? 20 : 50,
+                  ),
                   onPressed: startPresentation,
                 ),
         ],
@@ -153,7 +170,10 @@ class _ActivityMessagePresentationPageState
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.arrow_left),
+                        icon: Icon(
+                          Icons.arrow_left,
+                          size: Responsive.isMobile(context) ? 50 : 100,
+                        ),
                         onPressed: previousMessage,
                       ),
                       ElevatedButton(
@@ -171,11 +191,20 @@ class _ActivityMessagePresentationPageState
                           isPresentationRunning
                               ? 'Stop Presentation'
                               : 'Start Presentation',
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: Responsive.isMobile(context)
+                                ? mHeadingTextSize.toDouble()
+                                : tHeadingTextSize.toDouble(),
+                          ),
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.arrow_right),
+                        icon: Icon(
+                          Icons.arrow_right,
+                          size: Responsive.isMobile(context) ? 50 : 100,
+                        ),
                         onPressed: nextMessage,
                       ),
                     ],
@@ -206,33 +235,35 @@ class _ActivityMessagePresentationPageState
         ],
       ),
       child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            if (settingsController.showPictures.value)
-              SizedBox(
-                height: widget.rowNumber == 2
-                    ? screenHeight * 0.15
-                    : screenHeight * 0.4,
-                child: Image.file(
-                  File(message.messageImage),
-                  fit: BoxFit.scaleDown,
-                ),
-              ),
-            if (settingsController.showText.value)
-              Padding(
-                padding: EdgeInsets.all(screenHeight * 0.01),
-                child: Text(
-                  message.messageText,
-                  style: TextStyle(
-                    color: settingsController.fontColor.value,
-                    fontSize: settingsController.fontSize.value,
-                    fontFamily: settingsController.fontFamily.value,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (settingsController.showPictures.value)
+                SizedBox(
+                  height: widget.rowNumber == 2
+                      ? screenHeight * 0.15
+                      : screenHeight * 0.4,
+                  child: Image.file(
+                    File(message.messageImage),
+                    fit: BoxFit.scaleDown,
                   ),
                 ),
-              ),
-          ],
+              if (settingsController.showText.value)
+                Padding(
+                  padding: EdgeInsets.all(screenHeight * 0.01),
+                  child: Text(
+                    message.messageText,
+                    style: TextStyle(
+                      color: settingsController.fontColor.value,
+                      fontSize: settingsController.fontSize.value,
+                      fontFamily: settingsController.fontFamily.value,
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -240,17 +271,35 @@ class _ActivityMessagePresentationPageState
 
   void nextMessage() {
     setState(() {
-      if (currentIndex + widget.totalImage <
-          controller.mainHiveDatabaseMessages.length) {
-        currentIndex += widget.totalImage;
+      if (settingsController.randomize.value) {
+        //  print('random---------------');
+        final random = Random();
+        setState(() {
+          currentIndex =
+              random.nextInt(controller.mainHiveDatabaseMessages.length);
+        });
+      } else {
+        if (currentIndex + widget.totalImage <
+            controller.mainHiveDatabaseMessages.length) {
+          currentIndex += widget.totalImage;
+        }
       }
     });
   }
 
   void previousMessage() {
     setState(() {
-      if (currentIndex - widget.totalImage >= 0) {
-        currentIndex -= widget.totalImage;
+      if (settingsController.randomize.value) {
+        //  print('random---------------');
+        final random = Random();
+        setState(() {
+          currentIndex =
+              random.nextInt(controller.mainHiveDatabaseMessages.length);
+        });
+      } else {
+        if (currentIndex - widget.totalImage >= 0) {
+          currentIndex -= widget.totalImage;
+        }
       }
     });
   }
@@ -272,6 +321,7 @@ class _ActivityMessagePresentationPageState
           seconds: settingsController.durationForPresentation.value.toInt()),
       (timer) {
         if (settingsController.randomize.value) {
+          //  print('random---------------');
           final random = Random();
           setState(() {
             currentIndex =

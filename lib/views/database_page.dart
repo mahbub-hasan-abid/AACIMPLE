@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:aacimple/common/responsive.dart';
+import 'package:aacimple/constant.dart';
 import 'package:aacimple/controllers/databasea_controller.dart';
 import 'package:aacimple/controllers/settings_controller.dart';
 import 'package:aacimple/models/database_model.dart';
@@ -19,26 +21,57 @@ class DatabaseManagementPage extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
 
     int crossAxisCount = screenWidth < 600 ? 2 : 4;
+    final isMobile = Responsive.isMobile(context);
 
-    print('-database---------------------------------');
-    print(controller.mainHiveDatabaseMessages.length);
     return DefaultTabController(
       length: 2, // Number of tabs
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Database Management'),
-          bottom: const TabBar(
+          title: Text(
+            'Database Management',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: isMobile
+                  ? mTapBarTextSize.toDouble()
+                  : tTapBarTextSize.toDouble(),
+            ),
+          ),
+          actions: [
+            TextButton.icon(
+                onPressed: () {
+                  controller.resetDatabase();
+                },
+                icon: const Icon(
+                  Icons.restore_page,
+                  color: Colors.white,
+                ),
+                label: Text(
+                  'Reset database',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: Responsive.isMobile(context)
+                        ? mHeadingTextSize.toDouble()
+                        : tHeadingTextSize.toDouble(),
+                  ),
+                ))
+          ],
+          bottom: TabBar(
             labelColor: Colors.white,
             unselectedLabelColor: Colors.white,
             labelStyle: TextStyle(
-              fontSize: 16.0,
+              fontSize: Responsive.isMobile(context)
+                  ? mBodyTextSize.toDouble()
+                  : tBodyTextSize.toDouble(),
               fontWeight: FontWeight.bold,
             ),
             unselectedLabelStyle: TextStyle(
               fontSize: 14.0,
             ),
             tabs: [
-              Tab(text: 'Main Database'),
+              Tab(
+                text: 'Main Database',
+              ),
               Tab(text: 'Old Messages Database'),
             ],
           ),
@@ -50,10 +83,14 @@ class DatabaseManagementPage extends StatelessWidget {
               () => Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: controller.mainHiveDatabaseMessages.isEmpty
-                    ? const Center(
+                    ? Center(
                         child: Text(
                           'No records available',
-                          style: TextStyle(fontSize: 16),
+                          style: TextStyle(
+                            fontSize: Responsive.isMobile(context)
+                                ? mBodyTextSize.toDouble()
+                                : tBodyTextSize.toDouble(),
+                          ),
                         ),
                       )
                     : GridView.builder(

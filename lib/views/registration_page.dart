@@ -1,3 +1,5 @@
+import 'package:aacimple/common/responsive.dart';
+import 'package:aacimple/constant.dart';
 import 'package:aacimple/controllers/registration_page_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,10 +11,17 @@ class RegistratationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = Responsive.isMobile(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Registration Page',
-            style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text('Registration Page',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: isMobile
+                  ? mTapBarTextSize.toDouble()
+                  : tTapBarTextSize.toDouble(),
+            )),
         backgroundColor: const Color(0xFF010080),
       ),
       body: Padding(
@@ -22,32 +31,32 @@ class RegistratationPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               controller.buildTextField(
-                  'Name', Icons.person, controller.nameController),
+                  'Name', Icons.person, controller.nameController, context),
               controller.buildTextField('Surname', Icons.person_outline,
-                  controller.surnameController),
+                  controller.surnameController, context),
               controller.buildTextField('Username', Icons.account_circle,
-                  controller.usernameController),
-              controller.buildTextField(
-                  'Password', Icons.lock, controller.passwordController,
+                  controller.usernameController, context),
+              controller.buildTextField('Password', Icons.lock,
+                  controller.passwordController, context,
                   isPassword: true),
               controller.buildTextField('Retype Password', Icons.lock_outline,
-                  controller.retypePasswordController,
+                  controller.retypePasswordController, context,
                   isPassword: true),
               Obx(() => controller.isPasswordMatch.value
                   ? Container()
                   : controller.buildErrorText('Passwords do not match')),
               controller.buildTextField('Mobile (Optional)', Icons.phone,
-                  controller.mobileController),
+                  controller.mobileController, context),
               controller.buildTextField(
-                  'Email', Icons.email, controller.emailController),
+                  'Email', Icons.email, controller.emailController, context),
               controller.buildTextField('License Code', Icons.vpn_key,
-                  controller.licenseCodeController),
+                  controller.licenseCodeController, context),
               const SizedBox(height: 20),
-              Obx(() =>
-                  controller.buildButtonRow(controller.isFormValid.value)),
-              controller.buildLicenseDetails(),
+              Obx(() => controller.buildButtonRow(
+                  controller.isFormValid.value, context)),
+              controller.buildLicenseDetails(context),
               const SizedBox(height: 30),
-              controller.buildDeveloperDetails(),
+              controller.buildDeveloperDetails(context),
             ],
           ),
         ),

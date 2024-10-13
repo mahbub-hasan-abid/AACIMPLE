@@ -8,7 +8,7 @@ class SettingsController extends GetxController {
   var listenToSound = true.obs;
   var fontColor = Colors.white.obs;
   var backgroundColor = Color(0xFF010080).obs; // Navy Blue
-  var fontSize = 12.0.obs;
+  var fontSize = 18.0.obs;
   var fontFamily = 'Tahoma'.obs;
 
   var randomize = false.obs;

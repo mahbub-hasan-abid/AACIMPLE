@@ -1,3 +1,5 @@
+import 'package:aacimple/common/responsive.dart';
+import 'package:aacimple/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -34,8 +36,8 @@ class RegistrationController extends GetxController {
         isPasswordSame;
   }
 
-  Widget buildTextField(
-      String label, IconData icon, TextEditingController controller,
+  Widget buildTextField(String label, IconData icon,
+      TextEditingController controller, BuildContext context,
       {bool isPassword = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -44,6 +46,11 @@ class RegistrationController extends GetxController {
         obscureText: isPassword,
         onChanged: (_) => validateForm(),
         decoration: InputDecoration(
+          labelStyle: TextStyle(
+            fontSize: Responsive.isMobile(context)
+                ? mBodyTextSize.toDouble()
+                : tBodyTextSize.toDouble(),
+          ),
           labelText: label,
           prefixIcon: Icon(icon, color: const Color(0xFF010080)),
           border: OutlineInputBorder(
@@ -54,7 +61,7 @@ class RegistrationController extends GetxController {
     );
   }
 
-  Widget buildButtonRow(bool isFormValid) {
+  Widget buildButtonRow(bool isFormValid, BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -69,6 +76,9 @@ class RegistrationController extends GetxController {
             child: Text(
               'Register',
               style: TextStyle(
+                fontSize: Responsive.isMobile(context)
+                    ? mBodyTextSize.toDouble()
+                    : tBodyTextSize.toDouble(),
                 color: isFormValid ? Colors.white : const Color(0xFF010080),
               ),
             ),
@@ -78,7 +88,7 @@ class RegistrationController extends GetxController {
     );
   }
 
-  Widget buildLicenseDetails() {
+  Widget buildLicenseDetails(BuildContext context) {
     return SizedBox(
       width: Get.width,
       child: Column(
@@ -91,18 +101,28 @@ class RegistrationController extends GetxController {
               onPressed: () {
                 // Link to PayPal for license payment
               },
-              child: const Text(
+              child: Text(
                 'Pay License via PayPal',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: Responsive.isMobile(context)
+                      ? mBodyTextSize.toDouble()
+                      : tBodyTextSize.toDouble(),
+                ),
               ),
               style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF010080)),
             ),
           ),
           const SizedBox(height: 20),
-          const Text(
+          Text(
             'Wrong license number? Try again or contact: sesses@cytanet.com.cy',
-            style: TextStyle(color: Colors.redAccent),
+            style: TextStyle(
+              color: Colors.redAccent,
+              fontSize: Responsive.isMobile(context)
+                  ? mBodyTextSize.toDouble()
+                  : tBodyTextSize.toDouble(),
+            ),
           ),
         ],
       ),
@@ -119,21 +139,45 @@ class RegistrationController extends GetxController {
     );
   }
 
-  Widget buildDeveloperDetails() {
-    return const Column(
+  Widget buildDeveloperDetails(BuildContext context) {
+    return Column(
       children: [
         //SizedBox(height: 20),
         Divider(),
         Text(
           'Developers: SESAT Ltd, Cyprus',
           style: TextStyle(
+            fontSize: Responsive.isMobile(context)
+                ? mBodyTextSize.toDouble()
+                : tBodyTextSize.toDouble(),
             fontWeight: FontWeight.bold,
           ),
         ),
 
-        Text('Email: sesses@cytanet.com.cy'),
-        Text('Version: 1.0, All rights reserved'),
-        Text('Website: www.sesarab.com'),
+        Text(
+          'Email: sesses@cytanet.com.cy',
+          style: TextStyle(
+            fontSize: Responsive.isMobile(context)
+                ? mBodyTextSize.toDouble()
+                : tBodyTextSize.toDouble(),
+          ),
+        ),
+        Text(
+          'Version: 1.0, All rights reserved',
+          style: TextStyle(
+            fontSize: Responsive.isMobile(context)
+                ? mBodyTextSize.toDouble()
+                : tBodyTextSize.toDouble(),
+          ),
+        ),
+        Text(
+          'Website: www.sesarab.com',
+          style: TextStyle(
+            fontSize: Responsive.isMobile(context)
+                ? mBodyTextSize.toDouble()
+                : tBodyTextSize.toDouble(),
+          ),
+        ),
       ],
     );
   }

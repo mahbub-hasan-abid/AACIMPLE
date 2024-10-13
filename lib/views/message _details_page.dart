@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:aacimple/common/responsive.dart';
+import 'package:aacimple/constant.dart';
 import 'package:aacimple/controllers/databasea_controller.dart';
 import 'package:aacimple/models/database_model.dart';
 import 'package:aacimple/views/create_new_message_page.dart';
@@ -114,10 +116,20 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
     final double imageSize = screenWidth * 0.5; // 40% of screen width
     final double textSize = screenWidth * 0.02; // 4% of screen width
     final double buttonFontSize = screenWidth * 0.02; // 4% of screen width
+    final isMobile = Responsive.isMobile(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Message Details'),
+        title: Text(
+          'Message Details',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: isMobile
+                ? mTapBarTextSize.toDouble()
+                : tTapBarTextSize.toDouble(),
+          ),
+        ),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
